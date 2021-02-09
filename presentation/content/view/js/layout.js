@@ -1,6 +1,5 @@
 var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
 let mediaFilesGridHeight = 0;
-var baseURL = "http://"+location.host+"/main/videos/";
 var url = baseURL + "app/Stream/data.php?action=";
 var media_file = '';
 

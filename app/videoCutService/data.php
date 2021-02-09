@@ -11,7 +11,7 @@ require_once('Process.php');
 include_once('../Stream/config/database.php');
 include_once('DataUtil.php');
 
-$database = new Database();
+$database = new Database($host,$user,$pass,$db);
 $connection = $database->getConnection();
 $file = new video($connection);
 $dataUtil = new DataUtil();

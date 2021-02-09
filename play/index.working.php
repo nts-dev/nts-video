@@ -30,7 +30,7 @@ include_once '../app/Stream/config/database.php';
 
 include_once '../app/Stream/media.php';
 
-$database = new Database();
+$database = new Database($host,$user,$pass,$db);
 
 
 $db = $database->getConnection();

@@ -45,7 +45,7 @@ class HandleAuth {
 
 }
 
-$database = new Database();
+$database = new Database($host,$user,$pass,$db);
 
 $db = $database->getConnection();
 

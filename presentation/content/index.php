@@ -7,6 +7,8 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 
 $title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
 
+require_once '../../../config.php';
+
 session_start();
 if (!$eid) {
     $_SESSION['user_session'] = 0;
@@ -36,8 +38,10 @@ if (!$username) {
     <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/skins/terrace/dhtmlx.css">
 
     <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/codebase/fonts/font_roboto/roboto.css"/>
-    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fontawesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fa-solid.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fontawesome.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fa-solid.min.css"/>
 
 
     <link rel="stylesheet" type="text/css" href="view/css/gridcustome.css">
@@ -181,6 +185,7 @@ if (!$username) {
     var username = "<b><?= $_SESSION['user_name'] ?></b>";
     var branchId = "<?= $_SESSION['user_br'] ?>";
     var languageId = "0";
+    var baseURL = "<?= $NTS_CFG->wwwroot /*. "/" . basename(dirname(__FILE__, 3))*/ ?>/nts-video/";
 </script>
 
 <script src="view/js/layout.js"></script>
@@ -194,7 +199,6 @@ if (!$username) {
 <script src="view/js/HTTPfunctions.js"></script>
 
 </body>
-
 
 
 </html>

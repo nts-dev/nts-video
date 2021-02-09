@@ -24,7 +24,7 @@ include_once $ROOT_PATH . '/app/Encoder/process.php';
 
 
 
-$database = new Database();
+$database = new Database($host,$user,$pass,$db);
 
 $db = $database->getConnection();
 

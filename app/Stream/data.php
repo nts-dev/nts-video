@@ -11,7 +11,7 @@ include_once 'config/database.php';
 include_once 'media.php';
 include_once 'TranscoderREST.php';
 
-$database = new Database();
+$database = new Database($host, $user, $pass, $db);
 
 $db = $database->getConnection();
 
@@ -32,7 +32,6 @@ switch ($action) {
         );
 
 
-       
         if ($result->rowCount() > 0) {
             $row = $result->fetch();
             session_start();
@@ -261,7 +260,7 @@ switch ($action) {
         $project = generateProjectId(filter_input(INPUT_GET, 'project', FILTER_SANITIZE_NUMBER_INT));
 
 
-       // Not allowed extensions
+        // Not allowed extensions
         if (in_array($file_ext, $allowedFileExtensions) === false || substr_count($filename, ".") > 1) {
             $error = "This is not a playable media file";
             $ERRORS[] = $error;
@@ -278,7 +277,6 @@ switch ($action) {
         $transcoder = new TranscoderREST();
 
         $ROOT_PATH = "../../mediaresources/";
-
 
 
         $last_sort_result = $media->media_LAST_SORT($content);
@@ -302,7 +300,7 @@ switch ($action) {
                 $new_file = $target_path . "/media." . $file_ext;
 
 
-                if(!is_dir($target_path))
+                if (!is_dir($target_path))
                     mkdir($target_path, 755, true);
 
                 if (move_uploaded_file($templocation, $new_file)) {
@@ -456,7 +454,6 @@ switch ($action) {
         break;
 
     case 19:
-
 
 
         $result = $media->courses(1, 1);
@@ -847,7 +844,7 @@ switch ($action) {
 
 
         header("Content-Type: " . mime_content_type($filepath));
-        header('Content-Disposition: attachment; filename=' . $projectId . "_" .$file .".mp4");
+        header('Content-Disposition: attachment; filename=' . $projectId . "_" . $file . ".mp4");
 
         while (ob_get_level()) {
             ob_end_clean();

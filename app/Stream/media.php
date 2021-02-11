@@ -53,7 +53,7 @@ class Media {
 
    
             FROM
-                    nts_site.relation_contact C
+                    relation_contact C
             WHERE
 
                             contact_id =? 
@@ -66,8 +66,8 @@ class Media {
                     branch_id,
             pass
             FROM
-                    nts_site.relation_contact
-            JOIN nts_site.trainees ON trainees.IntranetID = relation_contact.contact_id
+                    relation_contact
+            JOIN trainees ON trainees.IntranetID = relation_contact.contact_id
             WHERE
 
                             contact_id =?
@@ -118,7 +118,7 @@ WHERE
                 x.`name`,
                 x.image
         FROM
-                 nts_site.xoops_shop_languages x";
+                 xoops_shop_languages x";
         $statement = $this->conn->prepare($query);
 
         return $this->returnStatement($statement);
@@ -147,7 +147,7 @@ WHERE
                         L.ID,  X.`name`,
                         X.languages_id
                 FROM  st_audio_language L
-                LEFT JOIN nts_site.xoops_shop_languages X ON X.languages_id = L.languageID
+                LEFT JOIN xoops_shop_languages X ON X.languages_id = L.languageID
                 WHERE
                         L.videoID = :id";
         $statement = $this->conn->prepare($query);
@@ -164,7 +164,7 @@ WHERE
                             T.language_id ID
                     FROM
                             st_text_files T
-                    LEFT JOIN nts_site.xoops_shop_languages X ON X.languages_id = T.language_id
+                    LEFT JOIN xoops_shop_languages X ON X.languages_id = T.language_id
                     WHERE
                             T.video_id =:id ";
         $statement = $this->conn->prepare($query);
@@ -210,12 +210,12 @@ WHERE
             )project_name,
              sort_id
             FROM
-                    nts_site.projects_dir
-            LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
+                    projects_dir
+            LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
             AND projects_dir_translation.language_id =:lang AND projects_dir.has_training = 1";
 
             if ($branchId > 0) {
-                $query .= " JOIN nts_site.project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
+                $query .= " JOIN project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
             }
         } else {
             $query = "
@@ -232,12 +232,12 @@ WHERE
             )project_name,
              sort_id
             FROM
-                    nts_site.projects_dir
-            LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
+                    projects_dir
+            LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
             AND projects_dir_translation.language_id =:lang AND projects_dir.has_training = 1 ";
 
             if ($branchId > 0) {
-                $query .= " JOIN nts_site.project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
+                $query .= " JOIN project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
             }
         }
 
@@ -278,11 +278,11 @@ WHERE
             )project_name,
              sort_id
             FROM
-                    nts_site.projects_dir
-            LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id";
+                    projects_dir
+            LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id";
 
             // if ($branchId > 0) {
-            //     $query .= " JOIN nts_site.project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
+            //     $query .= " JOIN project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
             // }
         } else {
             $query = "
@@ -299,12 +299,12 @@ WHERE
             )project_name,
              sort_id
             FROM
-                    nts_site.projects_dir
-            LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
+                    projects_dir
+            LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
             ";
 
             // if ($branchId > 0) {
-            //     $query .= " JOIN nts_site.project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
+            //     $query .= " JOIN project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =:br ";
             // }
         }
 
@@ -343,11 +343,11 @@ WHERE
                     )project_name,
                      projects_dir.sort_id
                     FROM
-                            nts_site.projects_dir
-                    LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
+                            projects_dir
+                    LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
                     AND projects_dir_translation.language_id = 1
                     AND projects_dir.has_training = 1
-                    LEFT JOIN nts_site.projects_dir X ON X.id = projects_dir.parent_id
+                    LEFT JOIN projects_dir X ON X.id = projects_dir.parent_id
                     WHERE
                             projects_dir.has_training = 1
                     AND projects_dir.archive = 0
@@ -768,7 +768,7 @@ WHERE
 
     function translations($id) {
         $query = "SELECT L.*, x.`name` FROM st_translations L 
-                LEFT JOIN nts_site.xoops_shop_languages x ON x.languages_id = L.`language`
+                LEFT JOIN xoops_shop_languages x ON x.languages_id = L.`language`
                 WHERE L.time_ID=?";
         $statement = $this->conn->prepare($query);
         $statement->bindParam(1, $id);
@@ -781,7 +781,7 @@ WHERE
                     '$id',
                     x.languages_id
             FROM
-                    nts_site.xoops_shop_languages x
+                    xoops_shop_languages x
             WHERE
                     x.languages_id IN(1,4)";
         $statement = $this->conn->prepare($query);
@@ -818,7 +818,7 @@ WHERE
                 st_captiontime T
         LEFT JOIN st_translations C ON C.time_ID = T.time_ID
         JOIN st_media F ON F.ID = T.fileID 
-        LEFT JOIN nts_site.xoops_shop_languages X ON X.languages_id = C.`language`
+        LEFT JOIN xoops_shop_languages X ON X.languages_id = C.`language`
         LEFT JOIN st_subtitle_properties P ON P.mediaID = T.fileID
         WHERE
                 T.fileID =?";
@@ -1161,7 +1161,7 @@ WHERE
                     A.LastUpdate
             FROM
                     st_audio_language L
-            JOIN nts_site.xoops_shop_languages X ON X.languages_id = L.languageID
+            JOIN xoops_shop_languages X ON X.languages_id = L.languageID
             JOIN st_audiomovie A ON A.LanguageID = L.ID
             WHERE
                     L.videoID = ?";
@@ -1180,7 +1180,7 @@ WHERE
                 FROM
                         st_audio_language L
                 JOIN st_audiomovie M ON M.LanguageID = L.ID
-                JOIN nts_site.xoops_shop_languages X ON X.languages_id = L.languageID
+                JOIN xoops_shop_languages X ON X.languages_id = L.languageID
                 WHERE
                         L.videoID = ?";
 

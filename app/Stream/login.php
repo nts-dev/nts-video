@@ -30,8 +30,8 @@ class HandleAuth {
                     branch_id,
             pass
             FROM
-                    nts_site.relation_contact
-            JOIN nts_site.trainees ON trainees.IntranetID = relation_contact.contact_id
+                    relation_contact
+            JOIN trainees ON trainees.IntranetID = relation_contact.contact_id
             WHERE
 
                             contact_id =?

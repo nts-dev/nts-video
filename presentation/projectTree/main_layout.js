@@ -64,7 +64,7 @@ courses_grid.setSkin('dhx_skyblue');
 courses_grid.enableItemEditor(1);
 courses_grid.enableTreeImages(false);
 courses_grid.enableTreeLines(true);
-courses_grid.loadXML(url + '19');
+courses_grid.loadXML("../nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + global_userID);
 
 
 

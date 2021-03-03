@@ -2,6 +2,7 @@ var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
 let mediaFilesGridHeight = 0;
 var url = baseURL + "app/Stream/data.php?action=";
 var media_file = '';
+var api_url = baseURL + "http://local.video/api/";
 
 
 if (typeof (window.innerWidth) == 'number') {

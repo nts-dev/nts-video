@@ -26,7 +26,7 @@ define("SERVER_NAME", $_SERVER["SERVER_NAME"]);
 if (SERVER_NAME === '192.168.1.2')
     $ROOT_PATH = LOCAL_PATH_ROOT . '/Training';
 else
-    $ROOT_PATH = LOCAL_PATH_ROOT;
+    $ROOT_PATH = LOCAL_PATH_ROOT . '/nts-video';
 
 
 include_once $ROOT_PATH.'/app/Stream/config/database.php';

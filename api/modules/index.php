@@ -20,9 +20,9 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 include_once '../core.php';
 //include database
-include_once $ROOT_PATH . '/app/Stream/config/database.php';
+include_once $ROOT_PATH . '/nts-video/app/Stream/config/database.php';
 //include object file
-include_once $ROOT_PATH . '/app/Stream/media.php';
+include_once $ROOT_PATH . '/nts-video/app/Stream/media.php';
 
 
 

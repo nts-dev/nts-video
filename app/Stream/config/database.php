@@ -7,6 +7,9 @@ $user = $NTS_CFG->dbuser;
 $pass = $NTS_CFG->dbpass;
 $db = $NTS_CFG->dbname;
 
+
+// var_dump($NTS_CFG);
+
 class Database
 {
 

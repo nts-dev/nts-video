@@ -85,8 +85,6 @@ media_files_grid.attachEvent("onXLE", function (grid_obj) {
     var id = media_files_grid.getSelectedRowId();
     fileId = id;
     onMedia_files_gridRowSelect(id);
-
-
 });
 
 
@@ -223,7 +221,7 @@ function sortMedia(rowId, content, type, nextId, index) {
             mediaIndex = index;
             if (parsedJSON != null && parsedJSON.status == 'success') {
                 dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                media_files_grid.clearAndLoad(url + '14&id=' + content);
+                media_files_grid.clearAndLoad(api_url + 'videos/category/' + content);
             }
         }
     });
@@ -232,7 +230,7 @@ function sortMedia(rowId, content, type, nextId, index) {
 function onModulecontentGridRowSelect(id) {
     if (id < 1) return;
     content_form.load(url + '11&id=' + id);
-    media_files_grid.clearAndLoad(url + '14&id=' + id);
+    media_files_grid.clearAndLoad(api_url + 'videos/category/' + id);
 }
 
 function onModules_toolbar_formClicked(id) {
@@ -320,7 +318,7 @@ function onMedia_files_toolbarClicked(id) {
                                         var parsedJSON = eval('(' + response + ')');
                                         if (parsedJSON != null) {
                                             dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                                            media_files_grid.clearAndLoad(url + '14&id=' + rowId);
+                                            media_files_grid.clearAndLoad(api_url + 'videos/category/' + rowId);
                                         }
                                     }
                                 });
@@ -507,7 +505,7 @@ function uploadMediaFile(rowId, action, media) {
             fileUploadWindow.close();
 
 
-            media_files_grid.clearAndLoad(url + '14&id=' + rowId, function () {
+            media_files_grid.clearAndLoad(api_url + 'videos/category/' + rowId, function () {
 //                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
                 $.ajax({
                     url: url + "41",

@@ -31,7 +31,7 @@ $client =  $_GET['client'];
 if (SERVER_NAME === '192.168.1.2')
     $ROOT_PATH = LOCAL_PATH_ROOT . '/Training';
 else
-    $ROOT_PATH = LOCAL_PATH_ROOT;
+    $ROOT_PATH = LOCAL_PATH_ROOT . '/nts-video';
 
 
 
@@ -42,7 +42,7 @@ $user = "";
 
 switch ($mode){
     case "main":
-        $dbpath = $ROOT_PATH . '/app/Stream/config/database.php';
+        $dbpath = '/app/Stream/config/database.php';
         $user = 20196;
         break;
     

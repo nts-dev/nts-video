@@ -4,16 +4,16 @@
 class SessionDatabase
 {
 
-//    private static string $host = "83.98.243.187";
-//    private static string $db = "nts_site";
-//    private static string $username = "poweruser";
-//    private static string $password = "iMfFIg7gAxCmstc76KyQ";
-
-
-    private static string $host = "localhost";
+    private static string $host = "83.98.243.187";
     private static string $db = "nts_site";
-    private static string $username = "projectuser";
-    private static string $password = "wgnd8b";
+    private static string $username = "poweruser";
+    private static string $password = "iMfFIg7gAxCmstc76KyQ";
+
+
+//    private static string $host = "localhost";
+//    private static string $db = "nts_site";
+//    private static string $username = "projectuser";
+//    private static string $password = "wgnd8b";
 
     private static $INSTANCE = null;
 

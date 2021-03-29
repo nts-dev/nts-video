@@ -1,9 +1,15 @@
 var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
 var url = "/app/Stream/data.php?action=";
+const PARENT_URL = "/api/session/"
+const TRAINEE = {
+    id: 9656,
+    identifier: "1moche"
+}
 
 
 const VIDEO_URL = PARENT_URL + "video.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 const MODULE_URL = PARENT_URL + "module.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
+const PROJECT_URL = PARENT_URL + "project.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 
 
 var media_file = '';
@@ -86,7 +92,7 @@ var Module_layout = parentModuleTabbar.tabs('contentMain').attachLayout('3U');
 
 Module_layout.cells('a').setText('Contents');
 Module_layout.cells('a').setHeight(myHeight * 0.4);
-Module_layout.cells('b').setWidth(myWidth * 0.25);
+Module_layout.cells('b').setWidth(myWidth * 0.28);
 Module_layout.cells('b').hideHeader();
 Module_layout.cells('c').hideHeader();
 
@@ -95,8 +101,8 @@ mediaFilesGridHeight = myHeight - ((myHeight * 0.24) + (myHeight * 0.13));
 
 var ModulecontentGrid = Module_layout.cells('a').attachGrid();
 ModulecontentGrid.setIconsPath('./preview/codebase/imgs/');
-ModulecontentGrid.setHeader(["ID", "Sort", "Content Name", "Date updated", "Description"]);
-ModulecontentGrid.setInitWidthsP('7,7,*,10,*');
+ModulecontentGrid.setHeader(["ID",  "Content Name", "Description", "Date updated"]);
+ModulecontentGrid.setInitWidthsP('7,*,*,15');
 ModulecontentGrid.init();
 
 const mediaPrimaryTabLayout = Module_layout.cells('c').attachLayout('1C');
@@ -186,7 +192,7 @@ const content_formData = [
     {type: "settings", position: "label-left", labelWidth: 100, inputWidth: 230, offsetLeft: 35},
     {type: "input", label: "ID", className: "formlabel", name: "id", hidden: true},
     {type: "input", label: "User", className: "formlabel", name: "user_id", hidden: true},
-    {type: "input", label: "ProjectID", className: "formlabel", name: "subject_id"},
+    {type: "input", label: "ProjectID", className: "formlabel", name: "subject_id", hidden: true},
     {type: "input", label: "Title", className: "formlabel", name: "title"},
     // {type: "newcolumn"},
     {type: "input", label: "Description", className: "formlabel", name: "description"},

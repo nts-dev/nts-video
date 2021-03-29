@@ -59,9 +59,9 @@ class MediaService implements Crud, IMediaService
     {
         assert($object != null);
 
-        return $this->network->invoke(
+        return $this->network->upload(
             self::ENDPOINT,
-            \session\NetworkMethod::POST,
+//            \session\NetworkMethod::POST,
             $object
         );
 

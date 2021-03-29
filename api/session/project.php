@@ -25,7 +25,14 @@ switch ($action) {
         break;
 
     case RequestType::PROJECT_COMBO:
-        $result = $service->findAll();
-        XML::combo($result);
+        $resultArray = $service->findAll();
+        $projects = array();
+        foreach ($resultArray as $project) {
+            $object = new stdClass;
+            $object->id = $project->id;
+            $object->title = $project->subject_title;
+            array_push($projects, $object);
+        }
+        XML::combo($projects);
         break;
 }

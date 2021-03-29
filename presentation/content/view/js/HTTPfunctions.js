@@ -296,11 +296,11 @@ function onMedia_files_toolbarClicked(id) {
 
     switch (id) {
         case 'new':
-            uploadMediaFile(rowId, 'new', 0);
+            uploadFile(rowId, 'new');
             break;
         case 'replace':
             if (mediaId) {
-                uploadMediaFile(rowId, 'replace', mediaId);
+                uploadFile(rowId, 'replace');
             }
             break;
 
@@ -452,27 +452,34 @@ function generateSpriteWithTextsService(alias) {
     });
 }
 
-function uploadFile(media, moduleId, subjectId, action) {
+function uploadFile(moduleId, action) {
 
-    if (media < 1 || moduleId < 1 || subjectId < 1)
+    if (moduleId < 1 || projectId < 1)
         return
 
     const fileUploadMainWindow = new dhtmlXWindows();
-    const fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 480, 600);
+    const fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 480, 530);
     fileUploadWindow.center();
     fileUploadWindow.setText("Upload  file");
 
     // fileUploadWindow.attachLayout('F4');
 
-    const fileUploadLayout = fileUploadWindow.attachLayout('1C');
+    const fileUploadLayout = fileUploadWindow.attachLayout('2E');
     fileUploadLayout.cells('a').hideHeader();
-
-
+    fileUploadLayout.cells('b').hideHeader();
     fileUploadLayout.attachEvent("onContentLoaded", function (id) {
 
     });
 
-    const uploadBoxformData = [
+    const formValues = {
+        subject_id: null,
+        module_id: null,
+        title: null,
+        description: null,
+    }
+
+
+    const formData = [
 
         {
             type: "block", list: [
@@ -481,22 +488,15 @@ function uploadFile(media, moduleId, subjectId, action) {
                 {type: "combo", label: "Category", className: "formlabel", name: "module_id", required: true},
                 {type: "input", label: "Title", className: "formlabel", name: "title", required: true},
                 {type: "input", label: "Description", className: "formlabel", name: "description", required: true},
-                {
-                    type: "fieldset", label: "Your file",
-                    list: [{
-                        type: "upload",
-                        name: "myFiles",
-                        inputWidth: 310,
-                        url: url + "13&id=" + moduleId + "&kind=" + action + "&media=" + media + "&project=" + projectId,
-                        swfPath: "http://" + location.host + "/dhtmlxSuite5/codebase/ext/uploader.swf",
-                        required: true
-                    }]
-                }
+
+                {type: "button", label: "Submit", className: "formlabel", name: "submit", value: "Attach file"},
             ]
         }
     ];
 
-    const uploadfileForm = fileUploadLayout.cells('a').attachForm(uploadBoxformData);
+
+    const uploadfileForm = fileUploadLayout.cells('a').attachForm(formData);
+
     const projectCombo = uploadfileForm.getCombo("subject_id");
     const moduleCombo = uploadfileForm.getCombo("module_id");
 
@@ -505,39 +505,108 @@ function uploadFile(media, moduleId, subjectId, action) {
      * TODO Project combo
      */
 
-    projectCombo.load(PROJECT_URL + "6", function(response) {
-        // uploadfileForm.setItemValue("subject_id", 52);
+    projectCombo.load(PROJECT_URL + "6", function (response) {
+        uploadfileForm.setItemValue("subject_id", projectId);
+    });
+
+    projectCombo.attachEvent("onChange", function (id) {
+        fileUploadLayout.cells('a').progressOn()
+        uploadfileForm.setItemValue("module_id", null);
+        moduleCombo.load(MODULE_URL + "8&id=" + id, function (response) {
+            fileUploadLayout.cells('a').progressOff()
+        });
+    })
+
+
+    uploadfileForm.attachEvent("onChange", function (name, value, state) {
+        // your code here
+        if (name === 'title')
+            formValues.title = value;
+    });
+
+    uploadfileForm.attachEvent("onButtonClick", function (name) {
+        // your code here
+        // var values = uploadfileForm.getFormData();
+        uploadfileForm.validate();
+        attachFile(
+            fileUploadLayout,
+            uploadfileForm.getItemValue("subject_id"),
+            uploadfileForm.getItemValue("module_id"),
+            uploadfileForm.getItemValue("title"),
+            uploadfileForm.getItemValue("description"),
+            moduleId)
+
+        // console.log(values)
     });
 
 
-    moduleCombo.load(MODULE_URL + "8", function(response) {
-        uploadfileForm.setItemValue("module_id", 52);
-    });
+}
 
 
+function attachFile(
+    layout,
+    subject_id,
+    module_id,
+    title,
+    description,
+    moduleId
+) {
+    const uploadFormBox = [
+        {
+            type: "block", list: [
+                {type: "setting", offsetTop: 20, offsetLeft: 30},
+                {
+                    type: "fieldset", label: "Your file",
+                    list: [{
+                        type: "upload",
+                        name: "myFiles",
+                        inputWidth: 310,
+                        url: VIDEO_URL + "4&subject_id=" + subject_id + "&module_id=" + module_id + "&" +
+                            "title=" + title + "&description=" + description,
+                        swfPath: "http://" + location.host + "/dhtmlxSuite5/codebase/ext/uploader.swf",
+                        required: true
+                    }]
+                },
+            ],
+        }
+    ]
+    const fileForm = layout.cells('b').attachForm(uploadFormBox);
 
-    uploadfileForm.attachEvent("onFileAdd", function (realName) {
+    fileForm.attachEvent("onFileAdd", function (realName) {
         const accepted = ["mp3", "mp4", "webm"];
         const ext = realName.substring(realName.length - 3, realName.length);
         if (!accepted.includes(ext)) {
             dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4"})
+            return;
         }
+
+        const name = uploadfileForm.getItemValue("title");
+        const description = uploadfileForm.getItemValue("description");
+
+        if (name === null || name.trim() === '') {
+            dhtmlx.alert({title: "Error", text: realName + " Title cannot be empty"})
+            return
+        }
+
+        if (description === null || description.trim() === '') {
+            dhtmlx.alert({title: "Error", text: realName + " Title cannot be empty"})
+            return
+        }
+
+
+        uploadfileForm.validate()
+
+        // formValues.subject_id = uploadfileForm.getValue("subject_id");
+        // formValues.module_id = uploadfileForm.getValue("module_id");
+        // formValues.title = uploadfileForm.getValue("title");
+        // formValues.description = uploadfileForm.getValue("description");
     });
 
-
-    uploadfileForm.attachEvent("onUploadFail", function (name) {
-        dhtmlx.alert({
-            title: "Error",
-            text: "There was an error while uploading " + name + ". Please check file type"
-        })
-
-    });
-
-    uploadfileForm.attachEvent("onUploadComplete", function () {
+    fileForm.attachEvent("onUploadComplete", function () {
 
 
         dhtmlx.message('file uploaded');
-        clearForm(uploadfileForm);
+        clearForm(fileForm);
 
 
         media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + moduleId, function () {
@@ -554,54 +623,17 @@ function uploadFile(media, moduleId, subjectId, action) {
 
     });
 
+
+    fileForm.attachEvent("onUploadFail", function (name) {
+        dhtmlx.alert({
+            title: "Error",
+            text: "There was an error while uploading " + name + ". Please check file type"
+        })
+
+    });
+
 }
 
-function uploadMediaFile(rowId, action, media) {
-
-    return uploadFile(200, rowId, projectId, action);
-
-    if (rowId) {
-        var fileUploadMainWindow = new dhtmlXWindows();
-        var fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 500, 300);
-        fileUploadWindow.center();
-        fileUploadWindow.setText("File details");
-
-        // fileUploadWindow.attachLayout('F4');
-
-        const fileUploadLayout = fileUploadWindow.attachLayout('1C');
-        fileUploadLayout.cells('a').hideHeader();
-
-
-        const upload_formData = [
-            {type: "settings", position: "label-left", labelWidth: 100, inputWidth: 230, offsetLeft: 35},
-            {type: "input", label: "id", className: "formlabel", name: "id", hidden: true},
-            {type: "input", label: "id", className: "formlabel", name: "subject_id", hidden: true, value: projectId},
-            {type: "input", label: "id", className: "formlabel", name: "module_id", hidden: true, value: rowId},
-            {type: "input", label: "Title", className: "formlabel", name: "title"},
-
-            {type: "input", label: "Description", className: "formlabel", name: "description"},
-            {type: "button", label: "Proceed", className: "formlabel", name: "submit", value: "Proceed"},
-        ];
-
-
-        //         //add form
-        const uploadfileForm = fileUploadLayout.cells('a').attachForm(upload_formData);
-        uploadfileForm.enableLiveValidation(true);
-
-
-        uploadfileForm.attachEvent("onButtonClick", function (id) {
-            if (id === "submit") {
-                // document.getElementById("realForm").submit();
-                uploadfileForm.send(VIDEO_URL + "4", "post", function () {
-                    console.log("sent")
-                    uploadFile(200, rowId, projectId, action)
-                    fileUploadWindow.close();
-                });
-            }
-        });
-
-    }
-}
 
 function clearForm(form) {
     form.getUploader('myFiles').clear();

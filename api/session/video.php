@@ -41,12 +41,13 @@ switch ($action) {
     case RequestType::MEDIA_ADD :
         header("Content-Type: application/json; charset=UTF-8");
         $data = [
-            'module_id' => filter_input(INPUT_POST, 'module_id', FILTER_SANITIZE_NUMBER_INT),
-            'title' => filter_input(INPUT_POST, 'title', FILTER_SANITIZE_STRING),
-            'subject_id' => filter_input(INPUT_POST, 'subject_id', FILTER_SANITIZE_STRING),
-            'description' => filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING)
+            'module_id' => filter_input(INPUT_GET, 'module_id', FILTER_SANITIZE_NUMBER_INT),
+            'title' => filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING),
+            'subject_id' => filter_input(INPUT_GET, 'subject_id', FILTER_SANITIZE_STRING),
+            'description' => filter_input(INPUT_GET, 'description', FILTER_SANITIZE_STRING),
+            'file' => $_FILES['file']
         ];
-
+//       var_dump($data);
         $mediaService->save($data);
         break;
 

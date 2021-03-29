@@ -80,7 +80,8 @@ courses_grid.setSkin('dhx_skyblue');
 courses_grid.enableItemEditor(1);
 courses_grid.enableTreeImages(false);
 // courses_grid.enableTreeLines(true);
-courses_grid.loadXML(PROJECT_URL + '1');
+// courses_grid.loadXML(PROJECT_URL + '1');
+courses_grid.loadXML(url + '19');
 
 
 
@@ -94,8 +95,8 @@ courses_grid.attachEvent("onEditCell", onCourses_gridCellEdit);
 
 
 courses_grid.attachEvent("onXLE", function (grid_obj, count) {
-    // onCourses_gridRowSelect('10398');
-    // courses_grid.openItem('10398');
+    onCourses_gridRowSelect('10398');
+    courses_grid.openItem('10398');
     tutAdminPrimary.cells('a').progressOff();
 });
 

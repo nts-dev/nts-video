@@ -51,4 +51,51 @@ class Network
         }
     }
 
+
+
+    public function upload(string $URL, $postData)
+    {
+        try {
+            $response = $this->client->request('POST', $URL, [
+                'multipart' => [
+                    [
+                        'name' => 'subject_id',
+                        'contents' => $postData['subject_id'],
+                    ],
+                    [
+                        'name' => 'module_id',
+                        'contents' => $postData['module_id'],
+                    ],
+                    [
+                        'name' => 'title',
+                        'contents' => $postData['title'],
+                    ],
+                    [
+                        'name' => 'description',
+                        'contents' => $postData['description'],
+                    ],
+                    [
+                        'name'     => 'file',
+                        'contents' => fopen($postData['file']['tmp_name'], 'r'),
+                        'filename' => $postData['file']['name']
+                    ]
+
+                ],
+                'headers'  => [
+                    'Authorization' =>  'Bearer ' . $this->session->getToken(),
+                    'debug' => false,
+                ]
+            ]);
+//            echo $response->getStatusCode(); // 200
+            $data = \GuzzleHttp\json_decode($response->getBody());
+            return $data;
+
+        } catch (RequestException $e) {
+            echo Psr7\Message::toString($e->getRequest());
+            if ($e->hasResponse()) {
+                echo Psr7\Message::toString($e->getResponse());
+            }
+        }
+    }
+
 }

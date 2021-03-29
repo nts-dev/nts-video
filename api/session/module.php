@@ -77,7 +77,9 @@ switch ($action) {
         break;
 
     case RequestType::MODULE_COMBO:
-        $resultArray = $service->findAll();
+        $resultArray = $service->findBySubject(
+            filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT)
+        );
         if (is_array($resultArray))
             XML::combo($resultArray);
         break;

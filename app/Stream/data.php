@@ -11,7 +11,7 @@ include_once 'config/database.php';
 include_once 'media.php';
 include_once 'TranscoderREST.php';
 
-$database = new Database($host, $user, $pass, $db);
+$database = new Database();
 
 $db = $database->getConnection();
 
@@ -19,19 +19,16 @@ $media = new Media($db);
 
 $data = "";
 
+
 //session_start();
 $allowedFileExtensions = array('mp3', 'mp4', 'webm');
 switch ($action) {
     default:
-        //        $result = $auth->login(9656,
-        //                '1moche'
-        //                );
+
 
         $result = $media->login(
             filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_STRING), filter_input(INPUT_POST, 'graDuration', FILTER_SANITIZE_STRING)
         );
-
-
         if ($result->rowCount() > 0) {
             $row = $result->fetch();
             session_start();
@@ -197,7 +194,6 @@ switch ($action) {
 
     case 9:
         $result = $media->content_ADD(filter_input(INPUT_POST, 'course', FILTER_SANITIZE_NUMBER_INT));
-        // echo $result;
         if ($result) {
             echo json_encode(array("response" => true, "message" => 'Record Added'));
         } else {
@@ -260,7 +256,7 @@ switch ($action) {
         $project = generateProjectId(filter_input(INPUT_GET, 'project', FILTER_SANITIZE_NUMBER_INT));
 
 
-        // Not allowed extensions
+        //Not allowed extensions
         if (in_array($file_ext, $allowedFileExtensions) === false || substr_count($filename, ".") > 1) {
             $error = "This is not a playable media file";
             $ERRORS[] = $error;
@@ -295,15 +291,10 @@ switch ($action) {
                 $to_file_path = $project . "/" . $content . "/" . getMediaType($file_type) . "/" . $id . "/";
                 $target_path = $ROOT_PATH . $to_file_path;
 
-                // chmod($ROOT_PATH, 755);
 
                 $new_file = $target_path . "/media." . $file_ext;
 
-
-                if (!is_dir($target_path))
-                    mkdir($target_path, 755, true);
-
-                if (move_uploaded_file($templocation, $new_file)) {
+                if (mkdir($target_path, 0700, true) && move_uploaded_file($templocation, $new_file)) {
 
                     //call transcoder service
                     // $transcoder::process($id, "media." . $file_ext, $file_type, $project, $content);
@@ -328,7 +319,7 @@ switch ($action) {
 
 
                         //call transcoder service
-                        $transcoder::process($file_id, "media." . $file_ext, $file_type, $project, $content);
+                        // $transcoder::process($file_id, "media." . $file_ext, $file_type, $project, $content);
                         print_r("{state: true, message:'File uploaded'}");
 
 
@@ -356,7 +347,7 @@ switch ($action) {
                 echo "<cell><![CDATA[" . $Alias . "]]></cell>";
                 echo "<cell><![CDATA[" . $fileSize . "]]></cell>";
                 echo "<cell><![CDATA[" . $fileType . "]]></cell>";
-                echo "<cell></cell>";
+                echo "<cell><![CDATA[" . $hash . "]]></cell>";
                 echo "</row>";
             }
         } else {
@@ -455,10 +446,9 @@ switch ($action) {
 
     case 19:
 
+        $result = $media->courses(1, ($_SESSION['user_br']) ? $_SESSION['user_br'] : 1);
 
-        $result = $media->courses(1, 1);
 
-        $roots = array();
         $media->setXMLHeader();
         echo '<tree id="0">';
         if ($result->rowCount() > 0) {
@@ -840,7 +830,7 @@ switch ($action) {
         $projectId = generateProjectId(filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT));
         $category = filter_input(INPUT_GET, 'category', FILTER_SANITIZE_NUMBER_INT);
         $file = filter_input(INPUT_GET, 'file', FILTER_SANITIZE_NUMBER_INT);
-        $filepath = '../../mediaresources/' . $projectId . "/" . $category . "/video/" . $file . "/media.mp4"; //tobe uploaded
+        $filepath = 'https://video.nts.nl/mediaresources/' . $projectId . "/" . $category . "/video/" . $file . "/media.mp4"; //tobe uploaded
 
 
         header("Content-Type: " . mime_content_type($filepath));
@@ -1217,6 +1207,62 @@ switch ($action) {
             echo json_encode(array("response" => true, "content" => $row['content']));
         }
         break;
+
+    case 61:
+        $result = $media->media_file_ALL();
+
+        if ($result->rowCount() > 0) {
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                extract($row);
+                $update = $media->updateVideosWithHashCodes($ID);
+                if ($update)
+                    echo json_encode(array("response" => true, "status" => 'success', "message" => 'Update successful on' . $ID));
+            }
+        }
+
+
+        if ($result)
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Update successful'));
+        else
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Error while updating item'));
+        break;
+
+    case 62:
+        $result = $media->comments_SAVE(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT), $_POST['content']);
+        if ($result)
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Update successful'));
+        else
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Error while updating item'));
+        break;
+
+    case 63:
+        $result = $media->mediaInfo_SAVE(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT), $_POST['content']);
+        if ($result)
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Update successful'));
+        else
+            echo json_encode(array("response" => true, "status" => 'success', "message" => 'Error while updating item'));
+        break;
+
+    case 64:
+        $result = $media->mediaInfo_GET(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT));
+        if ($result) {
+            $row = $result->fetch();
+            echo json_encode(array("response" => true, "content" => $row['content'].' '));
+            http_response_code(200);
+        } else
+            http_response_code(401);
+        break;
+
+    case 65:
+        $result = $media->mediaComment_GET(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT));
+        if ($result) {
+            $row = $result->fetch();
+            echo json_encode(array("response" => true, "content" => $row['content'].' '));
+            http_response_code(200);
+        } else
+            http_response_code(401);
+        break;
+
 }
 
 function printXML(stdClass $obj, $x, $eid, $isRoot = false)
@@ -1228,7 +1274,7 @@ function printXML(stdClass $obj, $x, $eid, $isRoot = false)
     $projectId = generateProjectId($itemId);
 
     echo "<item id='" . $obj->id . "' text='" . $projectId . "| " . $itemName . "'>" . PHP_EOL;
-    echo '<userdata name="thisurl">index.php?page=' . $obj->id . '</userdata>' . PHP_EOL;
+    echo '<userdata name="thisurl">_index.php?page=' . $obj->id . '</userdata>' . PHP_EOL;
     $y = 0;
     foreach ($obj->children as $child) {
         ++$y;
@@ -1361,8 +1407,8 @@ function getMediaType($type)
 {
     $count = 0;
     $result = "";
-    while ($count < strlen($type) && isValid($type{$count}))
-        $result .= $type{$count++};
+    while ($count < strlen($type) && isValid($type[$count]))
+        $result .= $type[$count++];
 
     return $result;
 

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "nts-training",
+  "private_key_id": "8d07a326d2004be38823bffa32da616ceb60fbfe",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDBrEDl60G0eT9W\nzR0zdLZ1jcc8GLd9eEgFHYkbhIcIfWIxt732d2FT78Qy/+lwrMWH5lVjblk7dpE8\nPHnM5jLD2KNfV6xQ8oERFQMUMmr+Yad90KcCUhIiAANvePHs+zo3qe81s2tS0j3T\njZlUuxma7g5bY9eoID67qEybMEG2foVPuRTQWdaLsf10j9bjn0f70PlSW0gnb/Js\nRKpn3UPCRmeIOmiYJaWNis1T6cbQIQmLNZ1YOhS2FuW4FMWX/JdJ3ZbDlpIa0oAF\nmbu1t7Ku5d/iVMioKXgPM8N+Wqt7qGAe5NFasw7pdMa1a9a6mzj/hgoWmYO7JMMr\nua4Yt7BHAgMBAAECggEAT3PhM/GthOJw76U6I4/wAo3lfGwParPbp+2T/+wAkaUO\nkaL1lZUoIo0sileeZxEaAESoJyBwDwr3TiTpOvv9O4c2jrijAppaBK4AE1sTtcRO\nODlPKo6MzdH/ls2hQj1Whtt6PSecEeAaaR2gF7iiKoMa9LcjE+AWnFnRA6Fqc/kA\nD+iH4DFe6fWl+ixuFyvAr3UsJrZckaMnqXYV+ICIT/6Z8DPy1p5fOI01qoRURZXq\no29x7CLQNkJgMSRT25m8jnGLJ9gTYf/N7JB2onA+L2fTWLHNoNEWUxhWDD80v8UR\nCvC6+6Qw7NyqlZ9542fM538FuVN67HLnXXFGqUNscQKBgQD2Dx6fqUB4Ud2qQP99\ngoCHlh1uF9TPkeq9kVBCpv09JOr8SGhVzs5whhgu71Oo6+Ri+jY+hcY2pUVV/fIP\nhPcnKVW9ZM6ihztIgPkkmwxDsv0QBERloLNv75JRDhNulxPiXcDGUmIhiWSkSOKu\nILW94aCFY9jQvCZG+sIWvkFUBQKBgQDJf1OZbGezsuu62y4BtR81wAGgGesLwFA8\nB13CNC2LK6jUtC05XOpMtdLhgR0IEZPPXQvjVG+Fsbq+QS+rlQPf/HFJWeAIdyqr\nnzop4cJ9Nne5rU1SkdyIBF+QrIUBTAGe/C1pxQs0PqBzTGPWl46aJSccc5fsyxpA\ni02Dj+qQ2wKBgDrd7SaneFwQweZcfINLeHJ3sHzJSMmMEEvf+wKnLsi1D17h98wn\nmO4Etr5r1WkBXndrgxS8LmqeaZMkGQgreHGvCusvtdveXImBCZn/WhTMOozdaHuj\n0aoC989afb2keUZbxaXsybtaQnCnW0vrWW+fDic7dwChMssibNLCG6D9AoGAWgtr\naYmXQie3zlX6VksBenymfUx3zFWRxXGpRYsZuzK0jPFDsHnEPqmWZq3TMnLgce9r\ny5hFCiLlh/YLformI2dlnNjsE/xk9jL+xA6eYmQ/1psKjdafDa2eo0FlYrH7m3eo\nN7cVjbBa9YtypkguMtZdhwplHy2YOrXF2wAqW7cCgYEA0Mv9poyZcn+69Jifuuc1\n1fpafPgV2wT21Dr9BwLoN3411kgaZhfl43APfVkGywDMHt3lRp/8Qe3cAD+8cumA\n4S0AXg0I2PoXEE2D/v8/Xyhx0Um4Ow24NHdv9bYJ3aP/GFTaHAvM/G15RQt+Rnyh\nvaZ0hS0yTWfh0B2ICHaCNYc=\n-----END PRIVATE KEY-----\n",
+  "client_email": "nts-training@nts-training.iam.gserviceaccount.com",
+  "client_id": "108438081292330556497",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/nts-training%40nts-training.iam.gserviceaccount.com"
+}

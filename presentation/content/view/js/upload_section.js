@@ -1,7 +1,7 @@
 const content_category_title = "Content Category";
 const upload_title = "File Picker"
 const audio_text_title = "Text Translation"
-const video_cut_url = baseURL + "app/videoCutService/data.php?action="
+const video_cut_url = "/app/videoCutService/data.php?action="
 
 const maxUploadFormArea = myWidth * 0.5;
 const maxUploadFormAreaPaddingSide = myWidth * 0.1;
@@ -31,7 +31,7 @@ const uploaderBoxFormData = [
                     inputWidth: maxUploadFormArea,
                     inputHeight: 20,
                     // url: url +"1&name=" + form_details_obj.name + "&start=" + form_details_obj.start + "&end=" + form_details_obj.end,
-                    swfPath: baseURL + "lib/dhtmlxSuite5/codebase/ext/uploader.swf"
+                    swfPath: "http://" + location.host + "/dhtmlxSuite5/codebase/ext/uploader.swf"
                 }]
 
             }
@@ -53,7 +53,7 @@ uploaderFileForm.attachEvent("onFileAdd", function (realName) {
 
     if (!accepted.includes(ext)) {
         dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4 or webm"})
-        clearCutForm();
+        clearForm();
 
         return;
     }
@@ -68,7 +68,7 @@ uploaderFileForm.attachEvent("onFileAdd", function (realName) {
         _uploadMediaFile(myUploader, projectFromProject.title, parent)
     } else {
         dhtmlx.alert({title: "Error", text: "Please select directory from tree"})
-        // clearCutForm();
+        clearForm();
     }
 });
 
@@ -77,13 +77,13 @@ function _uploadMediaFile(form, project_name, project_id) {
     form.upload();
 }
 
-function clearCutForm() {
+function clearForm() {
     uploaderFileForm.getUploader('upload_file').clear();
 }
 
 uploaderFileForm.attachEvent("onUploadComplete", function (count) {
     dhtmlx.message("Upload complete");
-    // clearCutForm();
+    clearForm();
     mediaTreeGrid.clearAndLoad(video_cut_url + "6&project=" + mediaTreeGridState.project);
 });
 
@@ -163,8 +163,8 @@ function deleteAudioItem() {
 
 const mediaTreeGrid = uploaderLayout.cells('b').attachGrid();
 mediaTreeGrid.setSkin(grid_skin);
-mediaTreeGrid.setImagePath(baseURL + 'lib/dhtmlxSuite5/skins/web/imgs/');
-mediaTreeGrid.setHeader("Title, Link (Copy this to embed), Start time, End time, date");
+mediaTreeGrid.setImagePath('lib/dhtmlxSuite5/skins/web/imgs/');
+mediaTreeGrid.setHeader("Title, Link (Copy this to embed in moodle), Start time, End time, date");
 mediaTreeGrid.setInitWidthsP("25,*,8,8,10");
 mediaTreeGrid.setColTypes('tree,ed,ro,ro,ro');
 mediaTreeGrid.enableAutoWidth(false);

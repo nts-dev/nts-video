@@ -13,7 +13,7 @@ if (!$eid) {
 
 $username = $_SESSION['user_name'];
 if (!$eid) {
-    header('Location: index.php');
+    header('Location: _index.php');
 }
 
 ?>
@@ -155,6 +155,15 @@ if (!$eid) {
 </head>
 <body>
 <script>
+    const PARENT_URL = "/api/session/"
+    const TRAINEE = {
+        id: 9656,
+        identifier: "1moche"
+    }
+
+    const PROJECT_URL = PARENT_URL + "project.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
+
+
     <?php if (isset($projectId) && !empty($projectId)) { ?>
     var projectId = "<?= $projectId ?>";
     <?php } else { ?>

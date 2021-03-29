@@ -46,7 +46,7 @@ generatedAudioTextsTabbar.tabs('plain_texts').setActive();
 
 const subtitleMiniFilesLayout = generatedAudioTextsTabbar.tabs('web_vtt').attachLayout('1C');
 subtitleMiniFilesLayout.cells('a').hideHeader();
-subtitleMiniFilesLayout.cells('a').attachURL(baseURL + "app/file_code.php?id=filesFrame&name=filesIframe");
+subtitleMiniFilesLayout.cells('a').attachURL("/app/file_code.php?id=filesFrame&name=filesIframe");
 
 
 
@@ -75,7 +75,7 @@ var audioTextLayout = plainTextsLayout.cells('a').attachEditor();
 var audioMovieLayout = audioSubtitleMainLayout.cells('c').attachLayout('2E');
 audioMovieLayout.cells('a').setText('Audio Movie Grid');
 audioMovieLayout.cells('b').setText('Audio Tester');
-audioMovieLayout.cells('b').attachURL(baseURL + "play/audioplayer.php?file=output_test.mp3");
+audioMovieLayout.cells('b').attachURL("/play/audioplayer.php?file=output_test.mp3");
 
 
 var audioMovieLayoutToolbar = audioMovieLayout.cells('a').attachToolbar();

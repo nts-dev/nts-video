@@ -43,7 +43,7 @@ $name = $_GET['name'];
      
   
         save_onsavecallback: function () {
-           parent.saveFilmScript();
+           parent.saveMediaComment();
         }
 
     });

@@ -123,8 +123,7 @@ function deleteAudioItem(){
 
 
 const mediaGrid = upload_layout.cells('b').attachGrid();
-mediaGrid.setHeader("ID, Title, Start time, End time, Link (Copy this to embed), date");
-mediaGrid.setImagePath('/lib/dhtmlxSuite5/skins/web/imgs/');
+mediaGrid.setHeader("ID, Title, Start time, End time, Link (Copy this to embed in moodle), date");
 mediaGrid.setInitWidthsP("7,10,8,8,*,10");
 mediaGrid.enableAutoWidth(false);
 

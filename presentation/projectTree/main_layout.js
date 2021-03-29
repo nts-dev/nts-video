@@ -35,11 +35,27 @@ const tutMainPrimary_layout = new dhtmlXLayoutObject({
 });
 
 tutMainPrimary_layout.cells('a').hideHeader();
+var profile_toolbar = tutMainPrimary_layout.cells("a").attachMenu();
+profile_toolbar.setIconset("awesome");
+profile_toolbar.setSkin("material");
+
+if (!projectId) {
+    profile_toolbar.loadStruct('<menu>'
+        + '<item id="guest">'
+        + '<item id="logout" text="Logout"/>'
+        + ' </item>'
+        + '</menu>', function () {
+    });
+
+    profile_toolbar.setItemText("guest", "Welcome :" + username);
+
+}
+
 
 const tutAdminPrimary = tutMainPrimary_layout.cells("a").attachLayout('2U');
 
 tutAdminPrimary.cells('a').setText('Projects');
-tutAdminPrimary.cells('a').setWidth(myWidth * 0.2);
+tutAdminPrimary.cells('a').setWidth(myWidth * 0.159);
 
 
 const projectLayout = tutAdminPrimary.cells('b').attachLayout('1C');
@@ -50,21 +66,21 @@ const courses_toolbar = tutAdminPrimary.cells('a').attachToolbar();
 courses_toolbar.setIconset("awesome");
 courses_toolbar.loadStruct('<toolbar>'
     + '<item type="button" id="refresh" text="Refresh" img="fa fa-sync " /><item type="separator" id="sep_1" />'
-    // + '<item type="button" id="new" text="New Course" img="fa fa-plus " /><item type="separator" id="sep_2" />'
+    + '<item type="button" id="new" text="New Course" img="fa fa-plus " /><item type="separator" id="sep_2" />'
     + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_3" />'
     + '</toolbar>', function () {
 });
 
 const courses_grid = tutAdminPrimary.cells('a').attachTree();
 
-courses_grid.setImagePath('lib/dhtmlxsuite5/skins/skyblue/imgs/dhxtree_skyblue/');
+// courses_grid.setImagePath('http://' + location.host + '/dhtmlxsuite4/codebase/imgs/dhxtree_skyblue/');
 courses_grid.enableHighlighting('1');
 courses_grid.enableDragAndDrop('1', true);
 courses_grid.setSkin('dhx_skyblue');
 courses_grid.enableItemEditor(1);
 courses_grid.enableTreeImages(false);
-courses_grid.enableTreeLines(true);
-courses_grid.loadXML("../nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + global_userID);
+// courses_grid.enableTreeLines(true);
+courses_grid.loadXML(PROJECT_URL + '1');
 
 
 
@@ -78,8 +94,8 @@ courses_grid.attachEvent("onEditCell", onCourses_gridCellEdit);
 
 
 courses_grid.attachEvent("onXLE", function (grid_obj, count) {
-    onCourses_gridRowSelect('10398');
-    courses_grid.openItem('10398');
+    // onCourses_gridRowSelect('10398');
+    // courses_grid.openItem('10398');
     tutAdminPrimary.cells('a').progressOff();
 });
 
@@ -141,8 +157,8 @@ function onCourses_toolbarClicked(id) {
 
             break;
         case 'refresh':
-            courses_grid.deleteChildItems(0);
-            courses_grid.loadXML(url + '19');
+            // courses_grid.deleteChildItems(0);
+            courses_grid.loadXML(PROJECT_URL + '1');
 
             break;
 

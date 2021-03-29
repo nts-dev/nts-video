@@ -1,45 +1,27 @@
 <?php
 
-require_once '../../../config.php';
 
-$host = $NTS_CFG->dbhost;
-$user = $NTS_CFG->dbuser;
-$pass = $NTS_CFG->dbpass;
-$db = $NTS_CFG->dbname;
+class Database {
+//	private $host = "213.201.143.91";
+        private $host = "83.98.243.185";
+	private $db = "nts_training";
+	private $username = "root";
+	private $password = "wgnd8b";
 
+	public $conn;
+	
 
-// var_dump($NTS_CFG);
+	public function getConnection(){
+		$this->conn = null;
+		try{
+			$this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db, $this->username, $this->password);
+			
+		}catch(PDOExeption $exception){
+			return "Conection Error: ". $exception->getMessage();
+		}
 
-class Database
-{
+		return $this->conn;
+	}
 
-    private $host;
-    private $user;
-    private $pass;
-    private $db;
-
-    public $conn;
-
-    function __construct($host, $user, $pass, $db)
-    {
-        $this->host = $host;
-        $this->user = $user;
-        $this->pass = $pass;
-        $this->db = $db;
-    }
-
-
-    public function getConnection()
-    {
-        $this->conn = null;
-        try {
-            $this->conn = new PDO("mysql:host={$this->host};dbname=" . $this->db, $this->user, $this->pass);
-
-        } catch (PDOExeption $exception) {
-            return "Conection Error: " . $exception->getMessage();
-        }
-
-        return $this->conn;
-    }
 
 }

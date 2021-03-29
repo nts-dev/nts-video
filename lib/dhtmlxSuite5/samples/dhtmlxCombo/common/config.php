@@ -5,7 +5,7 @@
 	- PHP
 	- MySQL
 	
-	To install application, just make sure that your MySQL running and load index.php 
+	To install application, just make sure that your MySQL running and load _index.php
 	after entering suitable (for you) information below
 */
 	$mysql_host = "127.0.0.1";

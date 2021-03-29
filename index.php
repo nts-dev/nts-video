@@ -1,55 +1,79 @@
+<?php
+
+use session\auth\AuthenticationServiceImpl;
+
+include('api/session/Commons.php');
+
+$service = new AuthenticationServiceImpl();
+
+$username = $password = "";
+$username_err = $password_err = $login_err = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $userId = $_POST["trainee"];
+    // Validate username
+    if (empty(trim($_POST["trainee"])))
+        $username_err = "Please enter a username.";
+    elseif (empty(trim($_POST["identifier"])))
+        $password_err = "Please enter a password.";
+    else {
+        $authenticated = $service->authenticateClient(
+            filter_input(INPUT_POST, 'trainee', FILTER_SANITIZE_NUMBER_INT),
+            filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING)
+        );
+        if ($authenticated)
+            header("location: home.php?eid=" . $userId);
+
+        else
+            $login_err = "Error";
+    }
+}
+
+?>
+
+
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-    
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font: 14px sans-serif;
+        }
 
-    <title>NTS Training</title>
-    <link href="lib/jquery/jquery.css" rel="stylesheet" type="text/css"/>
-    <script src="lib/jquery/jquery_v152.js"></script>
-    <script src="lib/jquery/jquery-ui.min.js"></script>
-
-    <script type="text/javascript" src="presentation/content/view/js/script/validation.min.js"></script>
-    <script type="text/javascript" src="presentation/content/view/js/script/login.js"></script>
-    <link href="presentation/content/view/css/style.css" rel="stylesheet" type="text/css" media="screen">
+        .wrapper {
+            width: 350px;
+            padding: 20px;
+        }
+    </style>
 </head>
-<div class="container">
-    <?php ?>
-    <div class="form-sp"></div>
-    <form class="form-login" method="post" id="login-form">
-        <h2 class="form-login-heading text-center">Log In</h2>
-        <hr />
-        <div id="error">
+<body>
+<div class="wrapper col-xl-5 col-lg-6 col-md-8 col-sm-10 mx-auto text-center form p-4">
+    <h2>Sign In</h2>
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <div class="form-group text-left">
+            <label>Username</label>
+            <input type="text" name="trainee"
+                   class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>"
+                   value="<?php echo $username; ?>">
+            <span class="invalid-feedback"><?php echo $username_err; ?></span>
+        </div>
+        <div class="form-group text-left">
+            <label>Password</label>
+            <input type="password" name="identifier"
+                   class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>"
+                   value="<?php echo $password; ?>">
+            <span class="invalid-feedback"><?php echo $password_err; ?></span>
         </div>
         <div class="form-group">
-            <input type="text" class="form-control" name="user_id" id="user_id" />
-            <span id="check-e"></span>
-        </div>
-        <div class="form-group">
-            <input type="password" class="form-control" name="graDuration" id="graDuration" />
-        </div>
-        <hr />
-        <div class="form-group">
-            <!--                <div class="col-sm-5"><a href="home.php?eid=guest" id="guest-access"> Guest Access</a>-->
-            <!--                </div>-->
-            <div class="col-sm-2"></div>
-            <div class="col-sm-4">
-                <button type="submit" class="btn btn-default" name="login_button" id="login_button">
-                    <span class="glyphicon glyphicon-log-in"></span> &nbsp; Sign In
-                </button>
-
-            </div>
-
+            <input type="submit" class="btn btn-primary" value="Submit">
+            <span class="invalid-feedback"><?php echo $login_err; ?></span>
         </div>
     </form>
 </div>
-<div class="insert-post-ads1" style="margin-top:20px;">
-</div>
-</div>
-
 </body>
-
 </html>
+

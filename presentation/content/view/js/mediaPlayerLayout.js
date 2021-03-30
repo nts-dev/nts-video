@@ -2,8 +2,8 @@
 // const playerWinHeightExact = mediaFilesGridHeight-70;
 
 
-const playerWinWidth = 910;
-const playerWinHeight = 850;
+const playerWinWidth = 710;
+const playerWinHeight = 600;
 
 // const playerWinHeight = playerWinHeightExact > 560 ? playerWinHeightExact : 560;
 
@@ -15,7 +15,7 @@ function startMediaPlayerWindow(media) {
     }
 
     const playerMainWindow = new dhtmlXWindows();
-    const playerWindow = playerMainWindow.createWindow("player_win", myWidth - playerWinWidth, myHeight - playerWinHeight, playerWinWidth, playerWinHeight);
+    const playerWindow = playerMainWindow.createWindow("player_win", playerWinWidth, playerWinHeight, playerWinWidth, playerWinHeight);
     playerWindow.modal = true;
     // playerWindow.button("close").disable();
     playerWindow.button("park").disable();
@@ -30,7 +30,12 @@ function startMediaPlayerWindow(media) {
     playerLayout.cells('b').hideHeader();
     playerLayout.cells('a').setHeight(playerWinHeight * 0.8)
     playerLayout.cells('b').setHeight(playerWinHeight * 0.2);
-    playerLayout.cells('a').attachURL("/play/?id=" + media.hash + '&showinfo=true&showthumbs=' + shareProps.allowThumbs);
+    playerLayout.cells('a').attachURL("/play/?id="
+        + media.id
+        + '&showinfo=true&showthumbs='
+        + shareProps.allowThumbs
+        + "&identifier=" + TRAINEE.identifier
+        + "&trainee=" + TRAINEE.id);
 
 
     const formData = [
@@ -52,7 +57,7 @@ function startMediaPlayerWindow(media) {
     const checkPropertiesForm = shareLayout.cells('a').attachForm(formData)
 
     var embedLink = '<iframe ' +
-        'src="' + window.location.origin + '/play?id=' + media.hash + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
+        'src="' + window.location.origin + '/play?id=' + media.id + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
         'width="560" ' +
         'height="325" ' +
         'allowfullscreen></iframe>'
@@ -70,7 +75,7 @@ function startMediaPlayerWindow(media) {
                 break;
         }
         embedLink = '<iframe ' +
-            'src="' + window.location.origin + '/play?id=' + media.hash + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
+            'src="' + window.location.origin + '/play?id=' + media.id + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
             'width="560" ' +
             'height="325" ' +
             'allowfullscreen></iframe>'

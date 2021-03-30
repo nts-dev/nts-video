@@ -35,7 +35,7 @@ class Network
                 [
                     'headers' =>
                         ['Authorization' => 'Bearer ' . $this->session->getToken(),],
-                    'debug' => true,
+                    'debug' => false,
                     'json' => $JSON
                 ],
             );

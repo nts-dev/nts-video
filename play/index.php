@@ -1,111 +1,31 @@
-<!DOCTYPE html>
-
 <?php
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-
-header("Access-Control-Allow-Origin: *");
-
-header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
-
-$SERVER = "https://" . $_SERVER['HTTP_HOST'] . "/";
-
 $id = $_GET['id'];
 
-
-//$id = 590;
-
-$videoHsl_directory = "/mediaresources/projectAlias[P100909]/contentID/type[video::audio]/mediaId/hsl/master.m3u8";
+include('../api/session/Commons.php');
 
 
-$master_directory = "";
+$bootstrap = App::getInstance();
 
 
-include_once '../app/Stream/config/database.php';
+$session = $bootstrap::startSessionIfNotAvailable(
+    filter_input(INPUT_GET, 'trainee', FILTER_SANITIZE_STRING),
+    filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING)
+);
 
-include_once '../app/Stream/media.php';
+$mediaService = new MediaService($session);
 
-$database = new Database();
+$resultArray = $mediaService->findById($id);
 
-
-$db = $database->getConnection();
-
-$media = new Media($db);
-
-$resourceResult = $media->mediaResources_GET($id);
-
-$subtitle_directory = "/uploads/subs/f_" . $id . "/";
-
-if ($resourceResult->rowCount() > 0) {
-    while ($row = $resourceResult->fetch(PDO::FETCH_ASSOC)) {
-        $type = getMediaType($row["media_type"]);
-        $subtitle_directory = "/uploads/subs/f_" . $row["media_id"] . "/";
-        $master_directory = "/mediaresources/" . generateProjectId($row["project_id"]) . "/" . $row["content_id"] . "/" . $type . "/" . $row["media_id"] . "/";
-    }
-}
-
-if (empty($master_directory)) {
-    echo "path empty";
-    die();
-}
-
-
-$available_subtitle_files = array();
-
-$subtitle_files_count = 0;
-
-
-if (is_dir($subtitle_directory)) {
-    $available_subtitle_files = glob($subtitle_directory . "*");
-    $subtitle_files_count = count($available_subtitle_files);
-}
-
-$hsl_file = $SERVER . $master_directory . "hsl/master.m3u8";
-$raw_file = $SERVER . $master_directory . "media.mp4";
-$tile_dir = $SERVER . $master_directory . "sprint/index.jpg";
-
-//echo $hsl_file;
-
-function getMediaType($type)
-{
-    $count = 0;
-    $result = "";
-    while ($count < strlen($type) && isValid($type[$count]))
-        $result .= $type[$count++];
-
-    return $result;
-
-}
-
-function isValid($string)
-{
-    return ctype_alnum($string);
-}
-
-function generateProjectId($itemId)
-{
-    if (strlen($itemId) == 1) {
-        $projectId = "P00000" . $itemId . "";
-    } else if (strlen($itemId) == 2) {
-        $projectId = "P0000" . $itemId . "";
-    } else if (strlen($itemId) == 3) {
-        $projectId = "P000" . $itemId . "";
-    } else if (strlen($itemId) == 4) {
-        $projectId = "P00" . $itemId . "";
-    } else if (strlen($itemId) == 5) {
-        $projectId = "P0" . $itemId . "";
-    } else {
-        $projectId = $itemId;
-    }
-
-    return $projectId;
-}
+//echo $resultArray->videoLink;
 
 
 ?>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -125,64 +45,18 @@ function generateProjectId($itemId)
 
 <body>
 <!--<div class="container">-->
-    <div class="row">
-        <video id="maat-player" claid="player_one"
-               class="video-js vjs-fluid vjs-default-skin player"
+<div class="row">
+    <video id="maat-player" claid="player_one"
+           class="video-js vjs-fluid vjs-default-skin player"
 
-               controls
-               preload="auto"
-               poster="images/poster.jpg">
+           controls
+           preload="auto">
 
-            <source src="<?= $raw_file ?>" type="video/mp4">
-            <source src="<?= $hsl_file ?>" type="application/x-mpegURL">
-
-            <?php
-            //add subtitles
-            foreach ($available_subtitle_files as $value) {
-                $strng = substr($value, -5, 1);
-                $lang = '';
-                $lang_abrv = '';
-                switch ($strng) {
-                    case 1:
-                        $lang = 'English';
-                        $lang_abrv = 'en';
-                        break;
-
-                    case 4:
-                        $lang = 'Dutch';
-                        $lang_abrv = 'nl';
-                        break;
-                    case 6:
-                        $lang = 'French';
-                        $lang_abrv = 'fr';
-                        break;
-                    case 9:
-                        $lang = 'Spanish';
-                        $lang_abrv = 'es';
-                        break;
-                    case 11:
-                        $lang = 'Malaysia';
-                        $lang_abrv = 'nrm';
-                        break;
-
-                    case 7:
-                        $lang = 'German';
-                        $lang_abrv = 'de';
-                        break;
-                    case 8:
-                        $lang = 'Swahili';
-                        $lang_abrv = 'sw';
-                        break;
-                }
-                ?>
-
-                <track preload='auto' kind='captions' src='<?= $value ?>' srclang='<?= $lang_abrv ?>'
-                       label='<?= $lang ?>' <?= $strng == 1 ? 'default' : '' ?>>
-                <?php
-            }
-            ?>
-        </video>
-    </div>
+        <source src="<? $resultArray->webm; ?>" type="video/webm"/>
+        <source src="<? $resultArray->videoLink_raw; ?> " type="video/mp4">
+        <source src="<? $resultArray->videoLink; ?>" type="application/x-mpegURL">
+    </video>
+</div>
 <!--</div>-->
 
 <script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
@@ -201,7 +75,7 @@ function generateProjectId($itemId)
 
                 logourl: 'https://www.video.nts.nl',
 
-                slideImage: '<?= $tile_dir ?>',
+                //slideImage: '<?//= $tile_dir ?>//',
 
                 slideType: 'vertical', //optional
 

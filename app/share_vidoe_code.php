@@ -27,7 +27,7 @@
         <script>
 
             var _editor = ace.edit("editor");
-            _editor.setTheme("ace/theme/agolawhite");
+            // _editor.setTheme("ace/theme/agolawhite");
             _editor.session.setMode("ace/mode/javascript");
             var session = ace.createEditSession("text");
 

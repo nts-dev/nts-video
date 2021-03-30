@@ -458,7 +458,7 @@ function uploadFile(moduleId, action) {
         return
 
     const fileUploadMainWindow = new dhtmlXWindows();
-    const fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 480, 530);
+    const fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 480, 580);
     fileUploadWindow.center();
     fileUploadWindow.setText("Upload  file");
 
@@ -529,6 +529,7 @@ function uploadFile(moduleId, action) {
         // var values = uploadfileForm.getFormData();
         uploadfileForm.validate();
         attachFile(
+            fileUploadWindow,
             fileUploadLayout,
             uploadfileForm.getItemValue("subject_id"),
             uploadfileForm.getItemValue("module_id"),
@@ -544,6 +545,7 @@ function uploadFile(moduleId, action) {
 
 
 function attachFile(
+    fileUploadWindow,
     layout,
     subject_id,
     module_id,
@@ -605,8 +607,9 @@ function attachFile(
     fileForm.attachEvent("onUploadComplete", function () {
 
 
-        dhtmlx.message('file uploaded');
+        dhtmlx.message('Upload success. Your file will be available shortly');
         clearForm(fileForm);
+        fileUploadWindow.close();
 
 
         media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + moduleId, function () {
@@ -627,7 +630,7 @@ function attachFile(
     fileForm.attachEvent("onUploadFail", function (name) {
         dhtmlx.alert({
             title: "Error",
-            text: "There was an error while uploading " + name + ". Please check file type"
+            text: "There was an error while uploading " + name + ". Please try again"
         })
 
     });
@@ -978,7 +981,7 @@ function onAudioGeneratorGridSelected(id) {
             url: url + "52", type: "POST", data: {id: id}, success: function (response) {
                 var parsedJSON = eval('(' + response + ')');
                 audioTextLayout.setContent(parsedJSON.content);
-                audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=" + sort + ".mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random());
+                // audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=" + sort + ".mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random());
             }
         });
     }
@@ -1024,7 +1027,7 @@ function onAudioMovieGridSelected(id) {
     var mediaid = media_files_grid.getSelectedRowId();
     var lang = audioLanguageGrid.getSelectedRowId();
     audioMovieLayout.cells('b').detachObject(true);
-    audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=audiomovie.mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random() + "&src=1");
+    // audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=audiomovie.mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random() + "&src=1");
 }
 
 

@@ -47,8 +47,8 @@ switch ($action) {
             'description' => filter_input(INPUT_GET, 'description', FILTER_SANITIZE_STRING),
             'file' => $_FILES['file']
         ];
-//       var_dump($data);
-        $mediaService->save($data);
+        echo json_encode($mediaService->save($data));
+
         break;
 
 

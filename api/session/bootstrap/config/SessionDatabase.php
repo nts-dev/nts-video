@@ -4,10 +4,10 @@
 class SessionDatabase
 {
 
-    private static string $host = "83.98.243.187";
-    private static string $db = "nts_site";
-    private static string $username = "poweruser";
-    private static string $password = "iMfFIg7gAxCmstc76KyQ";
+    private static string $host = "localhost";
+    private static string $db = "nts_projects";
+    private static string $username = "root";
+    private static string $password = "";
 
 
 //    private static string $host = "localhost";

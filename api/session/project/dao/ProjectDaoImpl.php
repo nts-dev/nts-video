@@ -18,19 +18,17 @@ class ProjectDaoImpl implements ProjectDao
 
     function getAll(): array
     {
-        $PROJECT = array();
-        try {
-            while ($row = $this->executor->findAll()->fetch(PDO::FETCH_ASSOC)) {
-                $PROJECT[$row['id']]['id'] = $row['id'];
-                $PROJECT[$row['id']]['title'] = $row['title'];
-                $PROJECT[$row['id']]['project_number'] = $this->generateProjectId($row['id']);
-            }
 
-            print_r($PROJECT);
-        } catch (Exception $e) {
-            print_r($e);
-        }
-        return $PROJECT;
+        $PROJECT = array();
+        $result = $this->executor->findAll();
+
+        //        while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+//            $PROJECT[$row['id']]['id'] = $row['id'];
+//            $PROJECT[$row['id']]['title'] = $row['title'];
+//            $PROJECT[$row['id']]['project_number'] = $this->generateProjectId($row['id']);
+//        }
+
+        return $result->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     function findById(int $id)

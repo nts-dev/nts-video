@@ -92,4 +92,21 @@ class XML
     }
 
 
+
+    static public function projectCombo($resultArray)
+    {
+        self::header();
+
+        echo "<complete>";
+
+        foreach ($resultArray as $cell) {
+            echo '<option value="' . $cell['id'] . '">';
+            echo "<![CDATA[" . $cell['title'] . "]]>";
+            echo '</option>';
+        }
+        echo "</complete>";
+
+    }
+
+
 }

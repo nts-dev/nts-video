@@ -35,10 +35,10 @@ class ProjectQueryExecutor
             )title,
              sort_id
             FROM
-                    nts_site.projects_dir
-            LEFT JOIN nts_site.projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
-            -- AND projects_dir_translation.language_id =1 AND projects_dir.has_training = 1
-            -- JOIN nts_site.project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =1
+                    projects_dir
+            LEFT JOIN projects_dir_translation ON projects_dir_translation.project_id = projects_dir.id
+             AND projects_dir_translation.language_id =1 AND projects_dir.has_training = 1
+             JOIN project_to_branch ON project_to_branch.project_id = projects_dir.id AND project_to_branch.branch_id =1
             
 
             -- WHERE

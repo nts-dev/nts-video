@@ -15,7 +15,7 @@ $session = $bootstrap::startSessionIfNotAvailable(
     filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING)
 );
 
-$service = new ProjectService($session);
+$service = new ProjectService();
 
 switch ($action) {
 
@@ -25,14 +25,8 @@ switch ($action) {
         break;
 
     case RequestType::PROJECT_COMBO:
+
         $resultArray = $service->findAll();
-        $projects = array();
-        foreach ($resultArray as $project) {
-            $object = new stdClass;
-            $object->id = $project->id;
-            $object->title = $project->subject_title;
-            array_push($projects, $object);
-        }
-        XML::combo($projects);
+        XML::projectCombo($resultArray);
         break;
 }

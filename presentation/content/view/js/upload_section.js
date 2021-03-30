@@ -1,7 +1,7 @@
 const content_category_title = "Content Category";
 const upload_title = "File Picker"
 const audio_text_title = "Text Translation"
-const video_cut_url = "/app/videoCutService/data.php?action="
+const video_cut_url = baseURL+ "/app/videoCutService/data.php?action="
 
 const maxUploadFormArea = myWidth * 0.5;
 const maxUploadFormAreaPaddingSide = myWidth * 0.1;

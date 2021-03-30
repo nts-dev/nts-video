@@ -1,52 +1,56 @@
 <?php
+ini_set('display_errors', '0');
+
 $eid = filter_input(INPUT_GET, 'eid', FILTER_SANITIZE_NUMBER_INT);
 
 $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 
 $title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
 
+require_once '../../../config.php';
 
+session_start();
+if (!$eid) {
+    $_SESSION['user_session'] = 0;
+    $_SESSION['user_name'] = 'Guest';
+    $_SESSION['user_br'] = 0;
+}
 
-//session_start();
-//if (!$eid) {
-//    $_SESSION['user_session'] = 0;
-//    $_SESSION['user_name'] = 'Guest';
-//    $_SESSION['user_br'] = 0;
-//}
-//
-//$username = $_SESSION['user_name'];
-//if (!$username) {
-//    header('Location: index.php');
-//}
-//ini_set('display_errors', '1');
+$username = $_SESSION['user_name'];
+if (!$username) {
+    header('Location: index.php');
+}
 ?>
-
+<!DOCTYPE html>
 <html>
-<meta content="text/html;charset=utf-8" http-equiv="Content-Type">
-<meta content="utf-8" http-equiv="encoding">
+
 <head>
-    <title>NTS Training</title>
+    <title>NTS Videos</title>
     <!-- here -->
     <link rel="icon" href="">
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
 
     <!--  css  -->
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/codebase/dhtmlx.css">
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/skins/material/dhtmlx.css">
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/skins/web/dhtmlx.css">
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/skins/terrace/dhtmlx.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/codebase/dhtmlx.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/skins/material/dhtmlx.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/skins/web/dhtmlx.css">
+    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/skins/terrace/dhtmlx.css">
 
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/codebase/fonts/font_roboto/roboto.css"/>
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fontawesome.min.css"/>
-    <link rel="stylesheet" type="text/css" href="/lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fa-solid.min.css"/>
+    <link rel="stylesheet" type="text/css" href="../../lib/dhtmlxSuite5/codebase/fonts/font_roboto/roboto.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fontawesome.min.css"/>
+    <link rel="stylesheet" type="text/css"
+          href="../../lib/dhtmlxSuite5/codebase/fonts/font_awesome/css/fa-solid.min.css"/>
 
 
     <link rel="stylesheet" type="text/css" href="view/css/gridcustome.css">
     <link rel="stylesheet" type="text/css" href="view/css/custome.css">
-    <script src="/lib/dhtmlxSuite5/codebase/dhtmlx.js"></script>
+    <script src="../../lib/dhtmlxSuite5/codebase/dhtmlx.js"></script>
     <!--  Jquery -->
-    <link href="/lib/jquery/jquery.css" rel="stylesheet" type="text/css"/>
-    <script src="/lib/jquery/jquery_v152.js"></script>
-    <script src="/lib/jquery/jquery-ui.min.js"></script>
+    <link href="../../lib/jquery/jquery.css" rel="stylesheet" type="text/css"/>
+    <script src="../../lib/jquery/jquery_v152.js"></script>
+    <script src="../../lib/jquery/jquery-ui.min.js"></script>
 
     <style>
 
@@ -157,8 +161,7 @@ $title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
 </head>
 <body>
 <div id="streamHomepage" style="width:100%;height:100%;"></div>
-
-</body>
+<iframe id="my_iframe" style="display:none;"></iframe>
 <script>
     let PROJECT_ID;
     let projectFromProject =
@@ -181,7 +184,8 @@ $title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
     var global_userID = "<?= $eid ?>";
     var username = "<b><?= $_SESSION['user_name'] ?></b>";
     var branchId = "<?= $_SESSION['user_br'] ?>";
-    var languageId = '0';
+    var languageId = "0";
+    var baseURL = "<?= $NTS_CFG->wwwroot /*. "/" . basename(dirname(__FILE__, 3))*/ ?>/nts-video/";
 </script>
 
 <script src="view/js/layout.js"></script>
@@ -191,8 +195,10 @@ $title = filter_input(INPUT_GET, 'title', FILTER_SANITIZE_STRING);
 <script src="view/js/uploader_form.js"></script>
 <script src="view/js/upload_section.js"></script>
 <script src="view/js/filmScript.js"></script>
-<!--<script src="view/js/videoCutUploadForm.js"></script>-->
+
 <script src="view/js/HTTPfunctions.js"></script>
+
+</body>
 
 
 </html>

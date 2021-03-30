@@ -11,27 +11,28 @@ use session\project\dao\ProjectDaoImpl;
 class ProjectService implements Crud
 {
 
-//    private ProjectDao $projectDao;
+    private $projectDao;
 
-    private Network $network;
-    private const ENDPOINT = "subjects/";
+//    private Network $network;
+//    private const ENDPOINT = "subjects/";
 
-    public function __construct($session)
+    public function __construct()
     {
-        $this->network = new Network($session, Constants::VIDEO_SEVER_API_URL);
+//        $this->network = new Network($session, Constants::VIDEO_SEVER_API_URL);
+        $this->projectDao = new ProjectDaoImpl();
 
     }
 
     function findAll()
     {
-//        $result =  $this->projectDao->getAll();
+        //                var_dump($result);
 
-        //        var_dump($result);
+                return $this->projectDao->getAll();
 
-        return $this->network->invoke(
-            self::ENDPOINT,
-            \session\NetworkMethod::GET
-        );
+//        return $this->network->invoke(
+//            self::ENDPOINT,
+//            \session\NetworkMethod::GET
+//        );
 
     }
 

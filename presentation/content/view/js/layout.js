@@ -1,6 +1,6 @@
 var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
-var url = "/app/Stream/data.php?action=";
-const PARENT_URL = "/api/session/"
+var url = baseURL+"app/Stream/data.php?action=";
+const PARENT_URL = baseURL+"api/session/"
 const TRAINEE = {
     id: 9656,
     identifier: "1moche"

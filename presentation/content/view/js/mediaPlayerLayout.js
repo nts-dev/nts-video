@@ -30,7 +30,7 @@ function startMediaPlayerWindow(media) {
     playerLayout.cells('b').hideHeader();
     playerLayout.cells('a').setHeight(playerWinHeight * 0.8)
     playerLayout.cells('b').setHeight(playerWinHeight * 0.2);
-    playerLayout.cells('a').attachURL("/play/?id="
+    playerLayout.cells('a').attachURL(baseURL +"/play/?id="
         + media.id
         + '&showinfo=true&showthumbs='
         + shareProps.allowThumbs
@@ -85,7 +85,7 @@ function startMediaPlayerWindow(media) {
     });
 
 
-    shareLayout.cells("b").attachURL("/app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
+    shareLayout.cells("b").attachURL(baseURL+ "/app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
 
 
     playerWindow.attachEvent("onMaximize", function (win) {

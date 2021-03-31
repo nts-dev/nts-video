@@ -4,6 +4,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Allow from any origin
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Max-Age: 86400');    // cache for 1 day
+}
+
+
 $id = $_GET['id'];
 
 include('../api/session/Commons.php');
@@ -21,7 +29,6 @@ $mediaService = new MediaService($session);
 
 $resultArray = $mediaService->findById($id);
 
-//echo $resultArray->videoLink;
 
 
 ?>
@@ -30,162 +37,28 @@ $resultArray = $mediaService->findById($id);
 <head>
     <meta charset="utf-8">
     <title>Player</title>
-    <link href="/lib/video-js/video-js.css" rel="stylesheet">
-    <link href="/lib/videojs-share/video-share.css" rel="stylesheet">
-    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../lib/video-js/video-js.css" rel="stylesheet">
+    <link href="../lib/videojs-share/video-share.css" rel="stylesheet">
+    <link href="../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 
-    <style>
-        .player {
-            width: 100% !important;
-            height: 100% !important;
-        }
-    </style>
 
 </head>
 
 <body>
 <!--<div class="container">-->
 <div class="row">
-    <video id="maat-player" claid="player_one"
-           class="video-js vjs-fluid vjs-default-skin player"
+    <video
+            id="my-video"
+            class="video-js"
+            controls
+            preload="auto"
+            data-setup="{}">
+        <source src="<?php echo $resultArray->videoLink_raw; ?> " type="video/mp4">
 
-           controls
-           preload="auto">
-
-        <source src="<? $resultArray->webm; ?>" type="video/webm"/>
-        <source src="<? $resultArray->videoLink_raw; ?> " type="video/mp4">
-        <source src="<? $resultArray->videoLink; ?>" type="application/x-mpegURL">
     </video>
 </div>
-<!--</div>-->
 
-<script type="text/javascript" src="/lib/bootstrap/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="/lib/video-js/video.min.js"></script>
-<script type="text/javascript" src="/lib/videojs-share/video-share.js"></script>
-<script type="text/javascript" src="/lib/video-js/plugins/videojs-audio-tracks.js"></script>
-<script type="text/javascript" src="/lib/nuevo/nuevo.min.js"></script>
+    <script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>
 
-<script>
-    (function (window, videojs) {
-        const player = window.player = videojs('maat-player', {}, function () {
-            this.nuevoPlugin({
-
-
-                logoposition: 'RT',
-
-                logourl: 'https://www.video.nts.nl',
-
-                //slideImage: '<?//= $tile_dir ?>//',
-
-                slideType: 'vertical', //optional
-
-                slideWidth: 192, //optional
-
-                slideHeight: 109  //optional
-
-            });
-        });
-
-        player.share(shareOptions);
-
-
-        const audioTrackList = player.audioTracks();
-
-        const textTrackList = player.textTracks();
-
-
-        const shareOptions = {
-            socials: ['fb', 'tw', 'reddit', 'gp', 'messenger', 'linkedin', 'telegram', 'whatsapp', 'viber', 'vk', 'ok', 'mail'],
-
-            url: window.location.href,
-
-            // optional for Facebook
-            redirectUri: window.location.href + '#close',
-
-
-            // optinal embed code
-            embedCode: '<iframe src="' + window.location.href + '" width="560" height="315" frameborder="0" allowfullscreen></iframe>'
-        }
-
-        // watch for changes that will be triggered by any change
-        // to enabled on any audio track. Manually or through the
-        // select element
-        audioTrackList.on('change', function () {
-            for (var i = 0; i < audioTrackList.length; i++) {
-                var track = audioTrackList[i];
-                if (track.enabled) {
-                    console.log('A new ' + track.language + ' has been enabled!');
-
-
-                    for (j = 0; j < textTrackList.length; j++) {
-                        var caption = textTrackList[j];
-                        console.log('Text tracks ' + textTrackList[j].language);
-                        if (caption.kind === 'captions' && caption.language === track.language) {
-                            caption.mode = 'showing';
-//                                    player.removeRemoteTextTrack(textTrackList[j])
-                        } else
-                            caption.mode = 'hidden';
-
-                    }
-                }
-            }
-        });
-
-
-        textTrackList.on('change', function () {
-            for (var i = 0; i < textTrackList.length; i++) {
-                var caption = textTrackList[i];
-                if (caption.mode === 'showing') {
-                    console.log('Txt ' + caption.language + ' has been enabled!');
-
-                    for (j = 0; j < audioTrackList.length; j++) {
-                        var track = audioTrackList[j];
-
-                        if (track.language === caption.language) {
-                            track.enabled = true;
-                        } else
-                            track.enabled = false;
-
-                    }
-                }
-            }
-        });
-
-
-        // will be fired twice in this example
-        audioTrackList.on('addtrack', function () {
-            console.log('a track has been added to the audio track list');
-        });
-        // will not be fired at all unless you call
-        // audioTrackList.removeTrack(trackObj)
-        // we typically will not need to do this unless we have to load
-        // another video for some reason
-        audioTrackList.on('removetrack', function () {
-            console.log('a track has been removed from the audio track list');
-        });
-        // getting all the possible audio tracks from the track list
-        // get all of thier properties
-        // add each track to the select on the page
-        // this is all filled out by HLS when it parses the m3u8
-        player.on('loadeddata', function () {
-            console.log('There are ' + audioTrackList.length + ' audio tracks');
-            for (var i = 0; i < audioTrackList.length; i++) {
-                var track = audioTrackList[i];
-                var option = document.createElement("option");
-                option.text = track.label;
-                if (track.enabled) {
-                    option.selected = true;
-                }
-
-                console.log('Track ' + (i + 1));
-                ['label', 'enabled', 'language', 'id', 'kind'].forEach(function (prop) {
-                    console.log("  " + prop + ": " + track[prop]);
-                });
-            }
-        });
-
-
-    }(window, window.videojs));
-</script>
 </body>
 </html>

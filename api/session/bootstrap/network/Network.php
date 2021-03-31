@@ -82,13 +82,14 @@ class Network
 
                 ],
                 'headers'  => [
-                    'Authorization' =>  'Bearer ' . $this->session->getToken(),
-                    'debug' => false,
-                ]
+                    'Authorization' =>  'Bearer ' . $this->session->getToken(),],
+                'debug' => false,
             ]);
 //            echo $response->getStatusCode(); // 200
-            $data = \GuzzleHttp\json_decode($response->getBody());
-            return $data;
+//            $data = \GuzzleHttp\json_decode($response->getBody());
+            $responseData = $response->getBody()->getContents();
+            $result = json_decode($responseData);
+            return $result;
 
         } catch (RequestException $e) {
             echo Psr7\Message::toString($e->getRequest());

@@ -46,6 +46,7 @@ class AuthenticationServiceImpl implements AuthenticationService
          * 2 Request token from flare api
          */
         $authResultJSON = $this->authenticateFromFlare($BOAuthenticatedUser);
+
         $authResult = json_decode($authResultJSON);
 
 
@@ -64,6 +65,7 @@ class AuthenticationServiceImpl implements AuthenticationService
             $this->storeSession($userSession);
 
 //            echo json_encode(array("response" => true, "state" => 'success', "message" => "Welcome, your session started", "token" => $authResult->access_token));
+            echo $authResultJSON;
             return true;
         }
 

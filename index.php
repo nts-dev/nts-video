@@ -22,7 +22,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             filter_input(INPUT_POST, 'trainee', FILTER_SANITIZE_NUMBER_INT),
             filter_input(INPUT_POST, 'identifier', FILTER_SANITIZE_STRING)
         );
-        if ($authenticated)
+        if($authenticated === null){
+//            echo json_encode(array("response" => false, "state" => 'fail', "message" => 'ID or password does not exist'));
+            header("location: ". $_SERVER["PHP_SELF"]);
+            die();
+        }
+        if ($authenticated && isset($authenticated) )
             header("location: home.php?eid=" . $userId);
 
         else

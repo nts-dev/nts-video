@@ -22,7 +22,7 @@ class AuthenticationServiceImpl implements AuthenticationService
     }
 
 
-    function authenticateClient($traineeId, $password) : bool
+    function authenticateClient($traineeId, $password)
     {
 
         assert($traineeId != null);
@@ -36,8 +36,7 @@ class AuthenticationServiceImpl implements AuthenticationService
 //        var_dump($BOAuthenticatedUser);
 
         if ($BOAuthenticatedUser == null) {
-            echo json_encode(array("response" => false, "state" => 'fail', "message" => 'ID or password does not exist'));
-            return false;
+            return null;
         }
 
 
@@ -65,8 +64,7 @@ class AuthenticationServiceImpl implements AuthenticationService
             $this->storeSession($userSession);
 
 //            echo json_encode(array("response" => true, "state" => 'success', "message" => "Welcome, your session started", "token" => $authResult->access_token));
-            echo $authResultJSON;
-            return true;
+            return $authResultJSON;
         }
 
 

@@ -11,10 +11,10 @@ include('Commons.php');
 $bootstrap = App::getInstance();
 
 
-$session = $bootstrap::startSessionIfNotAvailable(
-    filter_input(INPUT_GET, 'trainee', FILTER_SANITIZE_STRING),
-    filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING)
-);
+//$session = $bootstrap::startSessionIfNotAvailable(
+//    filter_input(INPUT_GET, 'trainee', FILTER_SANITIZE_STRING),
+//    filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING)
+//);
 
 $service = new ProjectService();
 
@@ -25,6 +25,8 @@ switch ($action) {
         if(isset($_GET['mode']) && $_GET['mode'] === 'json')
         {
             header("Content-Type: application/json; charset=UTF-8");
+            header("Access-Control-Allow-Methods: GET");
+
             $projectObj = new stdClass;
             $projectObj->data = array();
             foreach ($result as $project_item) {

@@ -17,9 +17,9 @@ if (!$eid) {
 }
 
 $username = $_SESSION['user_name'];
-if (!$username) {
-    header('Location: auth.php');
-}
+//if (!$username) {
+//    header('Location: auth.php');
+//}
 ?>
 <!DOCTYPE html>
 <html>

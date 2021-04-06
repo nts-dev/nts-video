@@ -83,7 +83,7 @@ class Network
                 ],
                 'headers'  => [
                     'Authorization' =>  'Bearer ' . $this->session->getToken(),],
-                'debug' => false,
+                'debug' => true,
             ]);
 //            echo $response->getStatusCode(); // 200
 //            $data = \GuzzleHttp\json_decode($response->getBody());

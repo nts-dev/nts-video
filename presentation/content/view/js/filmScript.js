@@ -12,5 +12,5 @@ var scriptMainLayout = scriptMainPrimaryLayout.cells("a").attachLayout('2U');
 scriptMainLayout.cells('a').hideHeader()
 scriptMainLayout.cells('b').hideHeader()
 
-scriptMainLayout.cells('a').attachURL("/app/tinyMceDisplay_scripts.php?id=contentIframe&name=contentIframe", false,
+scriptMainLayout.cells('a').attachURL(baseURL +"app/tinyMceDisplay_scripts.php?id=contentIframe&name=contentIframe", false,
         {template_content: ''});

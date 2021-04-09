@@ -203,9 +203,9 @@ const content_formData = [
 var content_form = Module_layout.cells('b').attachForm(content_formData);
 
 
-const mediaCommentTinyMCE = commentLayout.cells('b').attachURL("/app/tinyMceDisplay_comments.php?id=mediacomment&name=mediacomment")
+const mediaCommentTinyMCE = commentLayout.cells('b').attachURL(baseURL + "app/tinyMceDisplay_comments.php?id=mediacomment&name=mediacomment")
 
-const mediaInfoTinyMCE = commentLayout.cells('c').attachURL("/app/tinyMceDisplay_info.php?id=mediainfo&name=mediainfo")
+const mediaInfoTinyMCE = commentLayout.cells('c').attachURL(baseURL + "app/tinyMceDisplay_info.php?id=mediainfo&name=mediainfo")
 
 
 

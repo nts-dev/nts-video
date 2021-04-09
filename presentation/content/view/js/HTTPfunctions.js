@@ -98,6 +98,7 @@ media_files_grid.attachEvent("onXLE", function (grid_obj) {
 audioLanguageGrid.attachEvent("onXLE", function (grid_obj) {
     audioLanguageGrid.selectRow(0);
     var id = audioLanguageGrid.getRowId(0);
+    if(id > 0)
     onAudioLanguageGridSelected(id);
 })
 
@@ -168,6 +169,7 @@ function saveMediaComment() {
 
 
 function onCourses_gridRowSelect(id) {
+    if(id < 1) return;
     PROJECT_ID = id;
     mediaTreeGridState.project = id;
     ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + id);
@@ -527,6 +529,19 @@ function uploadFile(moduleId, action) {
     uploadfileForm.attachEvent("onButtonClick", function (name) {
         // your code here
         // var values = uploadfileForm.getFormData();
+
+        if(
+            fileUploadWindow === null ||
+            fileUploadLayout === null ||
+            uploadfileForm.getItemValue("subject_id").trim() === '' ||
+            uploadfileForm.getItemValue("module_id").trim() === '' ||
+            uploadfileForm.getItemValue("title").trim() === '' ||
+            uploadfileForm.getItemValue("description").trim() === '' ) {
+            uploadfileForm.validate()
+            return;
+
+        }
+
         uploadfileForm.validate();
         attachFile(
             fileUploadWindow,
@@ -534,8 +549,7 @@ function uploadFile(moduleId, action) {
             uploadfileForm.getItemValue("subject_id"),
             uploadfileForm.getItemValue("module_id"),
             uploadfileForm.getItemValue("title"),
-            uploadfileForm.getItemValue("description"),
-            moduleId)
+            uploadfileForm.getItemValue("description"))
 
         // console.log(values)
     });
@@ -550,8 +564,7 @@ function attachFile(
     subject_id,
     module_id,
     title,
-    description,
-    moduleId
+    description
 ) {
     const uploadFormBox = [
         {
@@ -598,10 +611,6 @@ function attachFile(
 
         uploadfileForm.validate()
 
-        // formValues.subject_id = uploadfileForm.getValue("subject_id");
-        // formValues.module_id = uploadfileForm.getValue("module_id");
-        // formValues.title = uploadfileForm.getValue("title");
-        // formValues.description = uploadfileForm.getValue("description");
     });
 
     fileForm.attachEvent("onUploadComplete", function () {
@@ -612,7 +621,7 @@ function attachFile(
         fileUploadWindow.close();
 
 
-        media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + moduleId, function () {
+        media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + module_id, function () {
 //                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
             $.ajax({
                 url: url + "41",

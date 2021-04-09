@@ -28,9 +28,9 @@ function startMediaPlayerWindow(media) {
     const playerLayout = playerWindow.attachLayout('2E');
     playerLayout.cells('a').hideHeader();
     playerLayout.cells('b').hideHeader();
-    playerLayout.cells('a').setHeight(playerWinHeight * 0.8)
-    playerLayout.cells('b').setHeight(playerWinHeight * 0.2);
-    playerLayout.cells('a').attachURL(baseURL +"/play/?id="
+    playerLayout.cells('a').setHeight(playerWinHeight * 0.75)
+    playerLayout.cells('b').setHeight(playerWinHeight * 0.25);
+    playerLayout.cells('a').attachURL(baseURL +"play/?id="
         + media.id
         + '&showinfo=true&showthumbs='
         + shareProps.allowThumbs
@@ -56,11 +56,15 @@ function startMediaPlayerWindow(media) {
 
     const checkPropertiesForm = shareLayout.cells('a').attachForm(formData)
 
+
+    const mediaUrl = baseURL + 'play?id=' + media.id
+
     var embedLink = '<iframe ' +
-        'src="' + window.location.origin + '/play?id=' + media.id + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
+        'src="' + mediaUrl + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
         'width="560" ' +
         'height="325" ' +
         'allowfullscreen></iframe>'
+
 
     checkPropertiesForm.attachEvent("onChange", function (name, value, state) {
         // your code here
@@ -75,7 +79,7 @@ function startMediaPlayerWindow(media) {
                 break;
         }
         embedLink = '<iframe ' +
-            'src="' + window.location.origin + '/play?id=' + media.id + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
+            'src="' + mediaUrl + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
             'width="560" ' +
             'height="325" ' +
             'allowfullscreen></iframe>'
@@ -85,7 +89,7 @@ function startMediaPlayerWindow(media) {
     });
 
 
-    shareLayout.cells("b").attachURL(baseURL+ "/app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
+    shareLayout.cells("b").attachURL(baseURL+ "app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
 
 
     playerWindow.attachEvent("onMaximize", function (win) {
@@ -105,7 +109,8 @@ function startMediaPlayerWindow(media) {
 
     function updateEmbedLink(embedLink) {
         const ifr = shareLayout.cells('b').getFrame();
-        ifr.contentWindow.setContent(embedLink);
+        const content =  "Iframe   "+ embedLink + " \n \nUrl       "+ mediaUrl;
+        ifr.contentWindow.setContent( content);
     }
 }
 

@@ -1,11 +1,13 @@
-<?php ?>
+<?php
+//$ROOT =  $NTS_CFG->wwwroot. "/nts-video/"
+?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>ACE in Action</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.3.3/ace.js?v=1" type="text/javascript" charset="utf-8"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-beautify.js?v=1" type="text/javascript" charset="utf-8"></script> 
+        <script src="../lib/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script src="../lib/ace/src/ext-beautify.js" type="text/javascript" charset="utf-8"></script>
         <style type="text/css" media="screen">
             #editor { 
                 position: absolute;

@@ -20,9 +20,7 @@ $bootstrap = App::getInstance();
 
 
 $session = $bootstrap::startSessionIfNotAvailable(
-    filter_input(INPUT_GET, 'trainee', FILTER_SANITIZE_STRING),
-    filter_input(INPUT_GET, 'identifier', FILTER_SANITIZE_STRING)
-);
+    20196, '1kenan');
 
 $mediaService = new MediaService($session);
 

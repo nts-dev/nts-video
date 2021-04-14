@@ -1,10 +1,7 @@
 var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
-var url = baseURL+"app/Stream/data.php?action=";
+const url = baseURL+"app/Stream/data.php?action=";
 const PARENT_URL = baseURL+"api/session/"
-const TRAINEE = {
-    id: 9656,
-    identifier: "1moche"
-}
+
 
 
 const VIDEO_URL = PARENT_URL + "video.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
@@ -62,7 +59,7 @@ if (!PROJECT_ID) {
         + '</menu>', function () {
     });
 
-    profile_toolbar.setItemText("guest", "Welcome :" + username);
+    profile_toolbar.setItemText("guest", "Welcome :" + TRAINEE.id);
 
 }
 

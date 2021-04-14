@@ -1,8 +1,11 @@
-<?php 
+<?php
+include ('../../includes.php');
 $id = $_GET['id'];
 $name = $_GET['name'];
+
+JSPackage::TINYMCE();
 ?>
-<script type="text/javascript" src="../lib/tinymce/tinymce.min.js"></script> 
+
 
 <form >
     <textarea id='<?= $id?>' name='<?= $name ?>'style="width: 100%;height:100%">  

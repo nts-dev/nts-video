@@ -57,14 +57,14 @@ courses_toolbar.loadStruct('<toolbar>'
 
 const courses_grid = tutAdminPrimary.cells('a').attachTree();
 
-courses_grid.setImagePath('lib/dhtmlxsuite5/skins/skyblue/imgs/dhxtree_skyblue/');
+// courses_grid.setImagePath('lib/dhtmlxsuite5/skins/skyblue/imgs/dhxtree_skyblue/');
 courses_grid.enableHighlighting('1');
 courses_grid.enableDragAndDrop('1', true);
 courses_grid.setSkin('dhx_skyblue');
 courses_grid.enableItemEditor(1);
 courses_grid.enableTreeImages(false);
 courses_grid.enableTreeLines(true);
-courses_grid.loadXML("../nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + global_userID);
+courses_grid.loadXML(WWWROOT + "nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + TRAINEE.id);
 
 
 

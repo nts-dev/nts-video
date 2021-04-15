@@ -20,7 +20,7 @@ class Network
         $this->session = $session;
         $this->client = new Client(
             [
-                'base_uri' => $BASE_URL,
+                'base_uri' => WEBURL .\Boot::WWWROOT. $BASE_URL,
                 'timeout' => 0
             ]
         );
@@ -34,7 +34,7 @@ class Network
                 $URL,
                 [
                     'headers' =>
-                        ['Authorization' => 'Bearer ' . $this->session->getToken(),],
+                        ['Authorization' => 'Bearer ' . $this->session->getFlareUser()->getToken(),],
                     'debug' => false,
                     'json' => $JSON
                 ],
@@ -82,7 +82,7 @@ class Network
 
                 ],
                 'headers'  => [
-                    'Authorization' =>  'Bearer ' . $this->session->getToken(),],
+                    'Authorization' =>  'Bearer ' . $this->session->getFlareUser()->getToken(),],
                 'debug' => false,
             ]);
 //            echo $response->getStatusCode(); // 200

@@ -1,13 +1,14 @@
 <?php
-//$ROOT =  $NTS_CFG->wwwroot. "/nts-video/"
+
+include('../../includes.php');
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <title>ACE in Action</title>
-        <script src="../lib/ace/src/ace.js" type="text/javascript" charset="utf-8"></script>
-        <script src="../lib/ace/src/ext-beautify.js" type="text/javascript" charset="utf-8"></script>
+
+        <?php JSPackage::ACE();?>
         <style type="text/css" media="screen">
             #editor { 
                 position: absolute;

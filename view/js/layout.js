@@ -42,40 +42,63 @@ dhtmlx.skin = global_skin;
 
 var tutMainPrimary_layout = new dhtmlXLayoutObject({
 //    parent: document.body,
-    parent: "streamHomepage",
+    parent: "videoAppHomepage",
     pattern: "1C"
 });
 
 tutMainPrimary_layout.cells('a').hideHeader();
-var profile_toolbar = tutMainPrimary_layout.cells("a").attachMenu();
-profile_toolbar.setIconset("awesome");
-profile_toolbar.setSkin("material");
-
-if (!PROJECT_ID) {
-    profile_toolbar.loadStruct('<menu>'
-        + '<item id="guest">'
-        + '<item id="logout" text="Logout"/>'
-        + ' </item>'
-        + '</menu>', function () {
-    });
-
-    profile_toolbar.setItemText("guest", "Welcome :" + TRAINEE.id);
-
-}
 
 
-var tutAdminPrimary = tutMainPrimary_layout.cells("a").attachLayout('1C');
+const tutAdminPrimary = tutMainPrimary_layout.cells("a").attachLayout('2U');
+
+tutAdminPrimary.cells('a').setText('Projects');
+tutAdminPrimary.cells('a').setWidth(myWidth * 0.2);
+
+const projectLayout = tutAdminPrimary.cells('b').attachLayout('1C');
+projectLayout.cells("a").hideHeader();
 
 
-var parent_Module_layout;
-//if (!projectId) {
-//    tutAdminPrimary.cells('b').hideHeader();
+const courses_toolbar = tutAdminPrimary.cells('a').attachToolbar();
+courses_toolbar.setIconset("awesome");
+courses_toolbar.loadStruct('<toolbar>'
+    + '<item type="button" id="refresh" text="Refresh" img="fa fa-sync " /><item type="separator" id="sep_1" />'
+    // + '<item type="button" id="new" text="New Course" img="fa fa-plus " /><item type="separator" id="sep_2" />'
+    + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_3" />'
+    + '</toolbar>', function () {
+});
+
+const courses_grid = tutAdminPrimary.cells('a').attachTree();
+
+// courses_grid.setImagePath('lib/dhtmlxsuite5/skins/skyblue/imgs/dhxtree_skyblue/');
+courses_grid.enableHighlighting('1');
+courses_grid.enableDragAndDrop('1', true);
+courses_grid.setSkin('dhx_skyblue');
+courses_grid.enableItemEditor(1);
+courses_grid.enableTreeImages(false);
+courses_grid.enableTreeLines(true);
+courses_grid.loadXML(WWWROOT + "nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + TRAINEE.id);
 
 
-parent_Module_layout = tutAdminPrimary.cells('a').attachLayout('1C');
 
 
-var parentModuleTabbar = parent_Module_layout.cells("a").attachTabbar();
+
+
+
+courses_grid.attachEvent("onXLE", function (grid_obj, count) {
+    // courses_grid.selectRow(0);
+    onCourses_gridRowSelect('1');
+    courses_grid.openItem('1');
+    tutAdminPrimary.cells('a').progressOff();
+});
+
+courses_grid.attachEvent("onXLS", function (grid_obj) {
+    tutAdminPrimary.cells('a').progressOn();
+});
+
+parent_Module_layout = tutAdminPrimary.cells('b').attachLayout('1C');
+
+
+const parentModuleTabbar = parent_Module_layout.cells("a").attachTabbar();
 parentModuleTabbar.addTab("contentMain", "Contents Main", myWidth * 0.09);
 parentModuleTabbar.addTab("uploader", "Moodle Videos", myWidth * 0.09);
 parentModuleTabbar.addTab("subtitles_audio", "Subtitles & Audio", myWidth * 0.09);
@@ -84,6 +107,7 @@ parentModuleTabbar.setArrowsMode("auto");
 parentModuleTabbar.tabs('contentMain').setActive();
 
 
+//
 var Module_layout = parentModuleTabbar.tabs('contentMain').attachLayout('3U');
 
 

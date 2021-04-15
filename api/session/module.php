@@ -4,6 +4,7 @@
 use session\RequestType;
 
 $action = $_GET['action'];
+include ('../../../auth.php');
 include('Commons.php');
 
 

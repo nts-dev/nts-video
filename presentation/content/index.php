@@ -22,8 +22,8 @@ include('../../../includes.php');
 
     ?>
 
-    <link rel="stylesheet" type="text/css" href="view/css/gridcustome.css">
-    <link rel="stylesheet" type="text/css" href="view/css/custome.css">
+    <link rel="stylesheet" type="text/css" href="../../view/css/gridcustome.css">
+    <link rel="stylesheet" type="text/css" href="../../view/css/custome.css">
 
     <?php
 
@@ -43,22 +43,22 @@ include('../../../includes.php');
         };
     const TRAINEE = { //TODO
         id: 20196,
-        identifier: "1moche"
+        identifier: "1kenan"
     }
 
     const WWWROOT = "<?php echo Boot::WWWROOT ?>";
     const baseURL = "<?php echo Boot::WWWROOT . 'nts-video/' ?>";
 </script>
 
-<script src="view/js/layout.js"></script>
-<script src="view/js/subtitleAudioLayout.js"></script>
-<script src="view/js/mediaPlayerLayout.js"></script>
-<script src="view/js/helpers/audioTranslator.js"></script>
-<script src="view/js/uploader_form.js"></script>
-<script src="view/js/upload_section.js"></script>
-<script src="view/js/filmScript.js"></script>
-
-<script src="view/js/HTTPfunctions.js"></script>
+<script src="../../view/js/layout.js"></script>
+<!--<script src="view/js/subtitleAudioLayout.js"></script>-->
+<!--<script src="view/js/mediaPlayerLayout.js"></script>-->
+<!--<script src="view/js/helpers/audioTranslator.js"></script>-->
+<!--<script src="view/js/uploader_form.js"></script>-->
+<!--<script src="view/js/upload_section.js"></script>-->
+<!--<script src="view/js/filmScript.js"></script>-->
+<!---->
+<!--<script src="view/js/HTTPfunctions.js"></script>-->
 
 </body>
 

@@ -1,8 +1,7 @@
 <?php
 
 
-use session\auth\AuthenticationServiceImpl;
-use session\Network;
+use auth\AuthenticationServiceImpl;
 
 class App
 {

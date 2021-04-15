@@ -6,14 +6,18 @@
 
 //contats
 
-var contentIndex = 0;
-var mediaIndex = 0;
+let contentIndex = 0;
+let mediaIndex = 0;
 
-const projectId = projectFromProject.id;
+let PROJECT_ID = 0;
 
 
-var fileId = 0;
+let fileId = 0;
 
+
+courses_toolbar.attachEvent("onClick", onCourses_toolbarClicked);
+courses_grid.attachEvent("onSelect", onCourses_gridRowSelect);
+courses_grid.attachEvent("onEditCell", onCourses_gridCellEdit);
 
 ModulecontentGrid.attachEvent("onRowSelect", onModulecontentGridRowSelect);
 modules_toolbar.attachEvent("onClick", onModules_toolbarClicked);
@@ -31,25 +35,9 @@ audioMovieLayoutToolbar.attachEvent("onClick", onAudioMovieLayoutToolbarClicked)
 audioMovieGrid.attachEvent("onRowSelect", onAudioMovieGridSelected);
 
 
-profile_toolbar.attachEvent("onClick", function (id, zoneId, cas) {
-    if (id === 'logout') {
-        tutMainPrimary_layout.cells('a').progressOn();
-        $.ajax({
-            url: url + "22", type: "POST",
-            success: function (response) {
-                var parsedJSON = eval('(' + response + ')');
-                if (parsedJSON.state == 'success') {
-                    setTimeout(' window.location.href = "/_index.php"; ', 1000);
-                    tutMainPrimary_layout.cells('a').progressOff();
-                }
-            }
-        });
-    }
+// ModulecontentGrid.clearAndLoad(MODULE_URL + "1");
 
-});
-
-
-onCourses_gridRowSelect(projectId);
+// media_files_grid.clearAndLoad(VIDEO_URL + '1');
 
 
 //----------------------------initial xml loads----------------------------------
@@ -59,10 +47,11 @@ ModulecontentGrid.attachEvent("onXLE", function (grid_obj) {
     ModulecontentGrid.selectRow(contentIndex);
     var id = ModulecontentGrid.getRowId(contentIndex);
     onModulecontentGridRowSelect(id);
+    Module_layout.cells('a').progressOff();
 });
 
-audioGeneratorGrid.attachEvent("onXLS", function (grid_obj) {
-//    audioSpeechLayout.cells('b').progressOn()
+ModulecontentGrid.attachEvent("onXLS", function (grid_obj) {
+    Module_layout.cells('a').progressOn()
 });
 
 audioGeneratorGrid.attachEvent("onXLE", function (grid_obj) {
@@ -80,6 +69,7 @@ media_files_grid.attachEvent("onXLS", function (grid_obj) {
 
 media_files_grid.attachEvent("onXLE", function (grid_obj) {
     mediaLayout.cells('a').progressOff();
+
     media_files_grid.selectRow(media_files_grid.getRowsNum() - 1);
     var id = media_files_grid.getSelectedRowId();
     fileId = id;
@@ -92,7 +82,8 @@ media_files_grid.attachEvent("onXLE", function (grid_obj) {
 audioLanguageGrid.attachEvent("onXLE", function (grid_obj) {
     audioLanguageGrid.selectRow(0);
     var id = audioLanguageGrid.getRowId(0);
-    onAudioLanguageGridSelected(id);
+    if (id > 0)
+        onAudioLanguageGridSelected(id);
 })
 
 //-----------------------------functions-------------------------------------------
@@ -119,82 +110,70 @@ function saveFilmScript() {
     }
 }
 
+function saveMediaInfo() {
+    const mediaId = media_files_grid.getSelectedRowId();
+    if (!mediaId) {
+        dhtmlx.alert("Please select media Item from main content")
+        return
+    }
+    const mediaCommentContentIframe = commentLayout.cells('c').getFrame();
+    const content = mediaCommentContentIframe.contentWindow.tinyMCE.activeEditor.getContent();
+    $.ajax({
+        url: url + "63", type: "POST", data: {id: mediaId, content: content},
+        success: function (response) {
+            const parsedJSON = eval('(' + response + ')');
+            if (parsedJSON != null) {
+                dhtmlx.message({title: 'Success', text: parsedJSON.message});
+            }
+        }
+    });
+}
+
+
+function saveMediaComment() {
+    const mediaId = media_files_grid.getSelectedRowId();
+
+    if (!mediaId) {
+        dhtmlx.alert("Please select media Item from main content")
+        return
+    }
+
+    const mediaCommentContentIframe = commentLayout.cells('b').getFrame();
+    const content = mediaCommentContentIframe.contentWindow.tinyMCE.activeEditor.getContent();
+    $.ajax({
+        url: url + "62", type: "POST", data: {id: mediaId, content: content},
+        success: function (response) {
+            const parsedJSON = eval('(' + response + ')');
+            if (parsedJSON != null) {
+                dhtmlx.message({title: 'Success', text: parsedJSON.message});
+            }
+        }
+    });
+}
+
 
 function onCourses_gridRowSelect(id) {
+    if (id < 1) return;
     PROJECT_ID = id;
     mediaTreeGridState.project = id;
-    ModulecontentGrid.clearAndLoad(url + "3&id=" + id);
+    ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + id);
 
     mediaTreeGrid.clearAndLoad(video_cut_url + "6&project=" + id);
 }
 
 
 function onModules_toolbarClicked(id) {
-    //    var course = courses_grid.getSelectedItemId();
-    var course = projectFromProject.id
-    var rowId = ModulecontentGrid.getSelectedRowId();
-
-    var rowIndex = ModulecontentGrid.getRowIndex(rowId);
+    var course = courses_grid.getSelectedItemId();
+    // const course = projectFromProject.id
     switch (id) {
-        case 'new':
-            $.ajax({
-                url: url + "9", type: "POST", data: {course: course},
-                success: function (response) {
-                    var parsedJSON = eval('(' + response + ')');
-                    if (parsedJSON != null) {
-                        dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                        ModulecontentGrid.clearAndLoad(url + "3&id=" + course);
-                    }
-                }
-            });
+
+
+        case 'default':
+            onCourses_gridRowSelect(course);
             break;
 
-        case 'delete':
-
-            if (rowId) {
-                dhtmlx.confirm({
-                    title: "Confirm",
-                    type: "confirm",
-                    text: "Delete this content?",
-                    callback: function (ok) {
-                        if (ok) {
-                            $.ajax({
-                                url: url + "10", type: "POST", data: {id: rowId},
-                                success: function (response) {
-                                    var parsedJSON = eval('(' + response + ')');
-                                    if (parsedJSON != null) {
-                                        dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                                        ModulecontentGrid.clearAndLoad(url + "3&id=" + course);
-                                    }
-                                }
-                            });
-
-                        } else {
-                            return false;
-                        }
-                    }
-                });
-            } else {
-                dhtmlx.alert('Please select record')
-            }
-            break;
-
-        case 'up':
-            var index = rowIndex - 1;
-            var nextId = ModulecontentGrid.getRowId(index);
-            if (nextId)
-                sortContent(rowId, course, 'up', nextId, index);
-            else
-                dhtmlx.alert('Cant sort further');
-            break;
-
-        case 'down':
-            var index = rowIndex + 1;
-            var nextId = ModulecontentGrid.getRowId(index);
-            if (nextId)
-                sortContent(rowId, course, 'down', nextId, index);
-            else
-                dhtmlx.alert('Cant sort further');
+        case 'all':
+            ModulecontentGrid.clearAndLoad(MODULE_URL + "1");
             break;
     }
 }
@@ -207,180 +186,204 @@ function sortContent(rowId, course, type, nextId, index) {
             contentIndex = index;
             if (parsedJSON != null && parsedJSON.status == 'success') {
                 dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                ModulecontentGrid.clearAndLoad(url + "3&id=" + course);
+                ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + course)
             }
         }
     });
 }
 
-function sortMedia(rowId, content, type, nextId, index) {
-    $.ajax({
-        url: url + "36", type: "POST", data: {id: rowId, action: type, nextId: nextId},
-        success: function (response) {
-            var parsedJSON = eval('(' + response + ')');
-            mediaIndex = index;
-            if (parsedJSON != null && parsedJSON.status == 'success') {
-                dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                media_files_grid.clearAndLoad(url + '14&id=' + content);
-            }
-        }
-    });
-}
 
 function onModulecontentGridRowSelect(id) {
-    content_form.load(url + '11&id=' + id);
-    media_files_grid.clearAndLoad(url + '14&id=' + id);
-
-//            ...........................................................Changed to be added later ...............................
-
-//    var contentIframe = modulecontentTabbar.tabs('commentsMain').getFrame();
-//    contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
-//
-//    $.ajax({
-//        url: url + "21", type: "POST", data: {id: id}, success: function (response) {
-//            var parsedJSON = eval('(' + response + ')');
-//            if (parsedJSON != null && parsedJSON.content != "null") {
-//                contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
-//            }
-//        }
-//    });
+    if (id < 1) return;
+    content_form.load(MODULE_URL + '2&id=' + id);
+    media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + id);
 }
+
+
+let isNewItem = false;
 
 function onModules_toolbar_formClicked(id) {
-    var contentId = ModulecontentGrid.getSelectedRowId();
+    const contentId = ModulecontentGrid.getSelectedRowId();
 
-    var courseId = projectFromProject.id;
-    switch (id) {
-        case 'save':
-            if (contentId) {
-                //                courseIndex = courses_grid.getRowIndex(rowId);
-                content_form.send(url + "12", "POST", function (loader, response) {
-                    var parsedJSON = eval('(' + response + ')');
-                    dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                    ModulecontentGrid.clearAndLoad(url + "3&id=" + courseId);
-                });
-            } else {
-                dhtmlx.alert('Select an item');
-            }
+    const courseId = courses_grid.getSelectedItemId();
 
-            break;
-        case 'up':
-            var index = rowIndex - 1;
-            var nextId = ModulecontentGrid.getRowId(index);
-            if (nextId)
-                sortContent(rowId, course, 'up', nextId, index);
-            else
-                dhtmlx.alert('Cant sort further');
-            break;
-        case 'down':
-            var index = rowIndex - 1;
-            var nextId = ModulecontentGrid.getRowId(index);
-            if (nextId)
-                sortContent(rowId, course, 'up', nextId, index);
-            else
-                dhtmlx.alert('Cant sort further');
-            break;
-    }
-}
-
-function onMedia_files_toolbarClicked(id) {
-    var rowId = ModulecontentGrid.getSelectedRowId();
-    var mediaId = media_files_grid.getSelectedRowId();
-
-
-    if (mediaId) {
-        var rowIndex = media_files_grid.getRowIndex(mediaId);
-        var colIndex = media_files_grid.getColIndexById("Alias");
-        var alias = media_files_grid.cells(mediaId, colIndex).getValue();
-
+    if (courseId > 0)
         switch (id) {
-            case 'new':
-                uploadMediaFile(rowId, 'new', 0);
-                break;
-            case 'replace':
-                if (mediaId) {
-                    uploadMediaFile(rowId, 'replace', mediaId);
-                }
-                break;
-				
-			case 'play': {
-                if (mediaId){
-                    const objMedia = {id: mediaId, title: "media title"};
-                    startMediaPlayerWindow(objMedia);
-                }
+            case 'save':
 
-            }
+                // if(courseId < 1 || ModulecontentGrid.getSelectedRowId() < 1) return;
+                const callback = function (response) {
+                    // your code here
+                    if (isNewItem)
+                        isNewItem = false;
+                    // const parsedJSON = eval('(' + data.response + ')');
+                    console.log(response)
+                    if (response != null) {
+                        dhtmlx.message({title: 'Success', text: "Item added"});
+                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
+                    }
+                }
+                isNewItem
+                    ? content_form.send(MODULE_URL + "4", "post", callback)
+                    : content_form.send(MODULE_URL + "5", "post", callback)
+                break;
+            case 'new':
+
+                isNewItem = true;
+                const dummyId = contentId + 2;
+                ModulecontentGrid.addRow(dummyId, dummyId);
+                content_form.clear();
+                ModulecontentGrid.selectRow(ModulecontentGrid.getRowIndex(dummyId));
+                content_form.setItemValue("subject_id", courseId);
+
                 break;
 
             case 'delete':
-
-                if (mediaId) {
+                const rowId = ModulecontentGrid.getSelectedRowId();
+                if (rowId) {
                     dhtmlx.confirm({
                         title: "Confirm",
                         type: "confirm",
-                        text: "Delete this file?",
+                        text: "Delete this content?",
                         callback: function (ok) {
                             if (ok) {
-                                $.ajax({
-                                    url: url + "15", type: "POST", data: {id: mediaId},
-                                    success: function (response) {
-                                        var parsedJSON = eval('(' + response + ')');
-                                        if (parsedJSON != null) {
-                                            dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                                            media_files_grid.clearAndLoad(url + '14&id=' + rowId);
-                                        }
+                                const callbackFromDeleteAction = function (response) {
+                                    console.log(response)
+                                    if (response != null) {
+                                        dhtmlx.message({title: 'Success', text: "Delete success"});
+                                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
                                     }
-                                });
-
+                                }
+                                content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
                             } else {
                                 return false;
                             }
                         }
                     });
                 } else {
-                    dhtmlx.alert('Please select record');
-                }
-
-                break;
-            case 'up':
-                var index = rowIndex - 1;
-                var nextId = media_files_grid.getRowId(index);
-                //             alert(index +"   "+ nextId)
-                if (nextId)
-                    sortMedia(mediaId, rowId, 'up', nextId, index);
-                else
-                    dhtmlx.alert('Cant sort further');
-                break;
-
-            case 'down':
-                var index = rowIndex + 1;
-                var nextId = media_files_grid.getRowId(index);
-
-                //             alert(index +"   "+ nextId)
-                if (nextId)
-                    sortMedia(mediaId, rowId, 'down', nextId, index);
-                else
-                    dhtmlx.alert('Cant sort further');
-                break;
-
-            case 'download':
-                if (mediaId) {
-                    window.location.href = url + "39&f=" + alias;
-                } else {
-                    dhtmlx.alert('Please select file to download');
+                    dhtmlx.alert('Please select record')
                 }
                 break;
-            case 'regenerate':
-                if (mediaId) {
-                    overWriteThumbTexts(alias)
-                } else
-                    dhtmlx.alert('Please select file to download');
-                break;
+
         }
-    } else {
-        dhtmlx.alert('Please select file to replace');
-    }
 }
+
+function onMedia_files_toolbarClicked(id) {
+    const rowId = ModulecontentGrid.getSelectedRowId();
+    const mediaId = media_files_grid.getSelectedRowId();
+
+
+    // if (mediaId) {
+    const rowIndex = media_files_grid.getRowIndex(mediaId);
+    // const hashColIndex = media_files_grid.getColIndexById("hash");
+    // const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
+
+    switch (id) {
+        case 'new':
+            uploadFile(rowId, 'new');
+            break;
+        case 'replace':
+            if (mediaId) {
+                uploadFile(rowId, 'replace');
+            }
+            break;
+
+        case 'play': {
+            if (mediaId) {
+                /**
+                 * TODO implement hash
+                 * @type {{id, title: string, hash}}
+                 */
+                const objMedia = {
+                    id: mediaId,
+                    hash: "",
+                    title: "media title"
+                };
+                startMediaPlayerWindow(objMedia);
+
+            }
+
+        }
+            break;
+
+        case 'delete':
+
+            if (mediaId) {
+                dhtmlx.confirm({
+                    title: "Confirm",
+                    type: "confirm",
+                    text: "Delete this file?",
+                    callback: function (ok) {
+                        if (ok) {
+                            $.ajax({
+                                url: url + "15", type: "POST", data: {id: mediaId},
+                                success: function (response) {
+                                    var parsedJSON = eval('(' + response + ')');
+                                    if (parsedJSON != null) {
+                                        dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                                        media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + rowId);
+                                    }
+                                }
+                            });
+
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            } else {
+                dhtmlx.alert('Please select record');
+            }
+
+            break;
+        case 'up':
+            var index = rowIndex - 1;
+            var nextId = media_files_grid.getRowId(index);
+            //             alert(index +"   "+ nextId)
+            if (nextId)
+                sortMedia(mediaId, rowId, 'up', nextId, index);
+            else
+                dhtmlx.alert('Cant sort further');
+            break;
+
+        case 'down':
+            var index = rowIndex + 1;
+            var nextId = media_files_grid.getRowId(index);
+
+            //             alert(index +"   "+ nextId)
+            if (nextId)
+                sortMedia(mediaId, rowId, 'down', nextId, index);
+            else
+                dhtmlx.alert('Cant sort further');
+            break;
+
+        case 'download':
+            if (mediaId) {
+                window.location.href = url + "39&PROJECT_ID=" + PROJECT_ID + "&category=" + rowId + "&file=" + mediaId;
+            } else {
+                dhtmlx.alert('Please select file to download');
+            }
+            break;
+        case 'regenerate':
+            if (mediaId) {
+                overWriteThumbTexts(alias)
+            } else
+                dhtmlx.alert('Please select file to download');
+            break;
+    }
+    // } else {
+    //     dhtmlx.alert('Please select file to replace');
+    // }
+}
+
+
+function downloadURI(uri, name) {
+    const link = document.createElement("a");
+    link.download = name;
+    link.href = uri;
+    link.click();
+}
+
 
 function overWriteThumbTexts(alias) {
 
@@ -421,7 +424,7 @@ function overwriteThumbnails(alias) {
 
 function generateSpriteWithTextsService(alias) {
     $.ajax({
-        url: "/app/Stream/generateSpriteImage.php", type: "GET", data: {file: alias}, success: function (response) {
+        url: "/app/Stream/TranscoderREST.php", type: "GET", data: {file: alias}, success: function (response) {
             var parsedJSON = eval('(' + response + ')');
             if (parsedJSON != null) {
 
@@ -433,163 +436,185 @@ function generateSpriteWithTextsService(alias) {
     });
 }
 
+function uploadFile(moduleId, action) {
 
-function uploadMediaFile(rowId, action, media) {
+    if (moduleId < 1 || PROJECT_ID < 1)
+        return
 
-    if (rowId) {
-        var fileUploadMainWindow = new dhtmlXWindows();
-        var fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 800, 620);
-        fileUploadWindow.center();
-        fileUploadWindow.setText("Upload Media File");
+    const fileUploadMainWindow = new dhtmlXWindows();
+    const fileUploadWindow = fileUploadMainWindow.createWindow("uploadpic_win", 0, 0, 480, 580);
+    fileUploadWindow.center();
+    fileUploadWindow.setText("Upload  file");
 
-        // fileUploadWindow.attachLayout('F4');
+    // fileUploadWindow.attachLayout('F4');
 
-        var fileUploadLayout = fileUploadWindow.attachLayout('3U');
-        fileUploadLayout.cells('a').hideHeader();
-        fileUploadLayout.cells('b').hideHeader();
-        fileUploadLayout.cells('c').hideHeader();
-        fileUploadLayout.cells('c').setHeight(myHeight * 0.2);
+    const fileUploadLayout = fileUploadWindow.attachLayout('2E');
+    fileUploadLayout.cells('a').hideHeader();
+    fileUploadLayout.cells('b').hideHeader();
+    fileUploadLayout.attachEvent("onContentLoaded", function (id) {
 
+    });
 
-        fileUploadLayout.cells('c').attachURL("/app/progressIndicator.php")
-
-        var progressIndicatorIframe = fileUploadLayout.cells('c').getFrame();
-
-
-        fileUploadLayout.attachEvent("onContentLoaded", function (id) {
-
-        });
-
-        var uploadBoxformData = [
-            {
-                type: "block", list: [
-                    {type: "settings", offsetTop: 20},
-                    {
-                        type: "fieldset", label: "Uploader",
-                        list: [{
-                            type: "upload",
-                            name: "myFiles",
-                            inputWidth: 330,
-                            url: url + "13&id=" + rowId + "&kind=" + action + "&media=" + media,
-                            swfPath: "http://" + location.host + "/dhtmlxSuite5/codebase/ext/uploader.swf"
-                        }]
-
-                    }
-                ]
-            }
-        ];
-
-
-        //         //add form
-        var uploadfileForm = fileUploadLayout.cells('a').attachForm(uploadBoxformData);
-
-        uploadfileForm.attachEvent("onFileAdd", function (realName) {
-            var accepted = ["mp3", "mp4", "webm"];
-            var ext = realName.substring(realName.length - 3, realName.length);
-            if (!accepted.includes(ext)) {
-                progressIndicatorIframe.contentWindow.updateProgress(0, "Uplaoding terminated");
-                dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4"})
-            }
-        });
-
-        uploadfileForm.attachEvent("onBeforeFileAdd", function (realName) {
-            progressIndicatorIframe.contentWindow.updateProgress("8%", "Uplaoding started...");
-
-            return true;
-        });
-
-
-        uploadfileForm.attachEvent("onUploadFail", function (name) {
-            dhtmlx.alert({
-                title: "Error",
-                text: "There was an error while uploading " + name + ". Please check file type"
-            })
-            progressIndicatorIframe.contentWindow.updateProgress(0, "Uplaoding terminated");
-        });
-
-        uploadfileForm.attachEvent("onUploadComplete", function () {
-            progressIndicatorIframe.contentWindow.updateProgress("15%", "Uplaoding in progress...");
-
-            dhtmlx.message('file uploaded');
-
-
-            media_files_grid.clearAndLoad(url + '14&id=' + rowId, function () {
-//                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
-                $.ajax({
-                    url: url + "41",
-                    type: "GET",
-                    data: {file: media_files_grid.getSelectedRowId()},
-                    success: function (response) {
-                        var parsedJSON = eval('(' + response + ')');
-                        if (parsedJSON != null) {
-                            filename = parsedJSON.filename;
-                            alias = parsedJSON.alias;
-                            fileUploadLayout.cells('b').attachURL("play/uploadtest.php?file=" + alias);
-                            progressIndicatorIframe.contentWindow.updateProgress("20%", "Uplaoding Finishing...");
-
-                            hlsEncordingService(media_files_grid.getSelectedRowId())
-
-
-                        }
-                    }
-                });
-            });
-
-        });
-
-        function hlsEncordingService(media_id) {
-            progressIndicatorIframe.contentWindow.updateProgress("25%", "Video encoding started...");
-            $.ajax({
-                url: "/app/Encoder/processfile.php", type: "GET", data: {id: media_id}, success: function (response) {
-                    var parsedJSON = eval('(' + response + ')');
-                    if (parsedJSON != null) {
-
-                        progressIndicatorIframe.contentWindow.updateProgress("40%", "Video encoding finishing...");
-
-                        generateThumbsService(alias);
-
-                    }
-                }
-            });
-        }
-
-        function generateThumbsService(filename) {
-            progressIndicatorIframe.contentWindow.updateProgress("50%", "Generating thumbnails...");
-            $.ajax({
-                url: url + "40", type: "GET", data: {file: filename}, success: function (response) {
-                    var parsedJSON = eval('(' + response + ')');
-                    if (parsedJSON != null) {
-                        progressIndicatorIframe.contentWindow.updateProgress("60%", "Generating thumbnails finishing");
-                        generateSpriteService(filename);
-
-                    }
-                }
-            });
-        }
-
-        function generateSpriteService(filename) {
-            progressIndicatorIframe.contentWindow.updateProgress("80%", "Genereting sprint image...");
-            $.ajax({
-                url: "/app/Stream/generateSpriteImage.php",
-                type: "GET",
-                data: {file: filename},
-                success: function (response) {
-                    var parsedJSON = eval('(' + response + ')');
-                    if (parsedJSON != null) {
-                        progressIndicatorIframe.contentWindow.updateProgress("90%", "Genereting sprint image finishing...");
-
-                        setTimeout(function () {
-                            progressIndicatorIframe.contentWindow.updateProgress("100%", "Process finished");
-                        }, 3000);
-                    }
-                }
-            });
-        }
-
-
+    const formValues = {
+        subject_id: null,
+        module_id: null,
+        title: null,
+        description: null,
     }
+
+
+    const formData = [
+
+        {
+            type: "block", list: [
+                {type: "settings", offsetTop: 20, offsetLeft: 30, labelWidth: 100, inputWidth: 280,},
+                {type: "combo", label: "Project /Subject", className: "formlabel", name: "subject_id", required: true},
+                {type: "combo", label: "Category", className: "formlabel", name: "module_id", required: true},
+                {type: "input", label: "Title", className: "formlabel", name: "title", required: true},
+                {type: "input", label: "Description", className: "formlabel", name: "description", required: true},
+
+                {type: "button", label: "Submit", className: "formlabel", name: "submit", value: "Attach file"},
+            ]
+        }
+    ];
+
+
+    const uploadfileForm = fileUploadLayout.cells('a').attachForm(formData);
+
+    const projectCombo = uploadfileForm.getCombo("subject_id");
+    const moduleCombo = uploadfileForm.getCombo("module_id");
+
+
+    /**
+     * TODO Project combo
+     */
+
+    projectCombo.load(PROJECT_URL + "6", function (response) {
+        uploadfileForm.setItemValue("subject_id", PROJECT_ID);
+    });
+
+    projectCombo.attachEvent("onChange", function (id) {
+        fileUploadLayout.cells('a').progressOn()
+        uploadfileForm.setItemValue("module_id", null);
+        moduleCombo.load(MODULE_URL + "8&id=" + id, function (response) {
+            fileUploadLayout.cells('a').progressOff()
+        });
+    })
+
+
+    uploadfileForm.attachEvent("onChange", function (name, value, state) {
+        // your code here
+        if (name === 'title')
+            formValues.title = value;
+    });
+
+    uploadfileForm.attachEvent("onButtonClick", function (name) {
+        // your code here
+        // var values = uploadfileForm.getFormData();
+
+        if (
+            fileUploadWindow === null ||
+            fileUploadLayout === null ||
+            uploadfileForm.getItemValue("subject_id").trim() === '' ||
+            uploadfileForm.getItemValue("module_id").trim() === '' ||
+            uploadfileForm.getItemValue("title").trim() === '' ||
+            uploadfileForm.getItemValue("description").trim() === '') {
+            uploadfileForm.validate()
+            return;
+
+        }
+
+        uploadfileForm.validate();
+        attachFile(
+            fileUploadWindow,
+            fileUploadLayout,
+            uploadfileForm.getItemValue("subject_id"),
+            uploadfileForm.getItemValue("module_id"),
+            uploadfileForm.getItemValue("title"),
+            uploadfileForm.getItemValue("description"))
+
+        // console.log(values)
+    });
+
+
 }
 
+
+function attachFile(
+    fileUploadWindow,
+    layout,
+    subject_id,
+    module_id,
+    title,
+    description
+) {
+    const uploadFormBox = [
+        {
+            type: "block", list: [
+                {type: "setting", offsetTop: 20, offsetLeft: 30},
+                {
+                    type: "fieldset", label: "Your file",
+                    list: [{
+                        type: "upload",
+                        name: "myFiles",
+                        inputWidth: 310,
+                        url: VIDEO_URL + "4&subject_id=" + subject_id + "&module_id=" + module_id + "&" +
+                            "title=" + title + "&description=" + description,
+                        swfPath: "http://" + location.host + "/dhtmlxSuite5/codebase/ext/uploader.swf",
+                        required: true
+                    }]
+                },
+            ],
+        }
+    ]
+    const fileForm = layout.cells('b').attachForm(uploadFormBox);
+
+    fileForm.attachEvent("onFileAdd", function (realName) {
+        const accepted = ["mp3", "mp4", "webm"];
+        const ext = realName.substring(realName.length - 3, realName.length);
+        if (!accepted.includes(ext)) {
+            dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4"})
+        }
+
+    });
+
+    fileForm.attachEvent("onUploadComplete", function () {
+
+
+        dhtmlx.message('Upload success. Your file will be available shortly');
+        clearForm(fileForm);
+        fileUploadWindow.close();
+
+
+        media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + module_id, function () {
+//                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
+            $.ajax({
+                url: url + "41",
+                type: "GET",
+                data: {file: media_files_grid.getSelectedRowId()},
+                success: function (response) {
+                    const parsedJSON = eval('(' + response + ')');
+                }
+            });
+        });
+
+    });
+
+
+    fileForm.attachEvent("onUploadFail", function (name) {
+        dhtmlx.alert({
+            title: "Error",
+            text: "There was an error while uploading " + name + ". Please try again"
+        })
+
+    });
+
+}
+
+
+function clearForm(form) {
+    form.getUploader('myFiles').clear();
+}
 
 function saveMediaCommentsContent() {
     var mediaId = media_files_grid.getSelectedRowId(),
@@ -614,31 +639,75 @@ function saveMediaCommentsContent() {
 function onMedia_files_gridRowSelect(id) {
 
 
+    if (id === null || id < 1)
+        return
+
+
     audioLanguageGrid.clearAndLoad(url + "48&media=" + id);
+    commentLayoutForm.setItemValue("ID", id);
 
-//    subtitleMiniTemplateTimingGrid.clearAndLoad(url + "25&id=" + id);
-    $.ajax({
-        url: url + "18", type: "POST", data: {id: id}, success: function (response) {
-            var parsedJSON = eval('(' + response + ')');
-            if (parsedJSON != null && parsedJSON.content != "null") {
-//                contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content); ..............................To be added later..............
-            }
-        }
-    });
+    const index = media_files_grid.getColIndexById("file_name");
+    const mediaItem = media_files_grid.cells(id, index).getValue();
+    commentLayoutForm.setItemValue("mediaName", mediaItem);
+    updateMediaCommentIframeContent(id)
+    updateMediaInfoIframeContent(id)
+    updateScriptIframeContent(id)
+//
+// //    subtitleMiniTemplateTimingGrid.clearAndLoad(url + "25&id=" + id);
+//     $.ajax({
+//         url: url + "18", type: "POST", data: {id: id}, success: function (response) {
+//             var parsedJSON = eval('(' + response + ')');
+//             if (parsedJSON != null && parsedJSON.content != "null") {
+// //                contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content); ..............................To be added later..............
+//             }
+//         }
+//     });
 
 
-    var _contentIframe = scriptMainLayout.cells('a').getFrame();
+}
+
+
+function updateScriptIframeContent(id) {
+    const _contentIframe = scriptMainLayout.cells('a').getFrame();
     _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
-
     $.ajax({
-        url: url + "60", type: "POST", data: {id: id}, success: function (response) {
-            var parsedJSON = eval('(' + response + ')');
-            if (parsedJSON != null) {
-                _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+            url: url + "60", type: "POST", data: {id: id}, success: function (response) {
+                const parsedJSON = eval('(' + response + ')');
+                if (parsedJSON != null && parsedJSON.response === true)
+                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+
             }
         }
-    });
+    );
+}
 
+function updateMediaCommentIframeContent(id) {
+    const _contentIframe = commentLayout.cells('b').getFrame();
+    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
+    $.ajax({
+            url: url + "65", type: "POST", data: {id: id}, success: function (response) {
+                const parsedJSON = eval('(' + response + ')');
+                if (parsedJSON != null && parsedJSON.response === true)
+                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+
+            }
+        }
+    );
+}
+
+
+function updateMediaInfoIframeContent(id) {
+    const _contentIframe = commentLayout.cells('c').getFrame();
+    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
+    $.ajax({
+            url: url + "64", type: "POST", data: {id: id}, success: function (response) {
+                const parsedJSON = eval('(' + response + ')');
+                if (parsedJSON != null && parsedJSON.response === true)
+                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+
+            }
+        }
+    );
 }
 
 
@@ -886,7 +955,7 @@ function onAudioGeneratorGridSelected(id) {
             url: url + "52", type: "POST", data: {id: id}, success: function (response) {
                 var parsedJSON = eval('(' + response + ')');
                 audioTextLayout.setContent(parsedJSON.content);
-                audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=" + sort + ".mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random());
+                // audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=" + sort + ".mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random());
             }
         });
     }
@@ -932,7 +1001,7 @@ function onAudioMovieGridSelected(id) {
     var mediaid = media_files_grid.getSelectedRowId();
     var lang = audioLanguageGrid.getSelectedRowId();
     audioMovieLayout.cells('b').detachObject(true);
-    audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=audiomovie.mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random() + "&src=1");
+    // audioMovieLayout.cells('b').attachURL("play/audioplayer.php?file=audiomovie.mp3&path=f_" + mediaid + "&lang=" + lang + "&version=" + Math.random() + "&src=1");
 }
 
 
@@ -1002,4 +1071,112 @@ function audioTranslatorWindow(language, audio_dbID) {
         }
 
     });
+
+
+}
+
+
+function onCourses_toolbarClicked(id) {
+    switch (id) {
+        case 'new':
+
+
+            var newCourse = new dhtmlXWindows();
+            var newCourseWin = newCourse.createWindow("w1", "", "", 380, 180);
+            newCourseWin.setText('');
+            newCourseWin.centerOnScreen();
+
+            var formData = [
+                {
+                    type: "settings",
+                    position: "label-left",
+                    labelWidth: 60,
+                    inputHeight: 23,
+                    inputWidth: 240,
+                    offsetLeft: 10,
+                    offsetTop: 20,
+                    className: "formlabel",
+                    align: "right"
+                },
+                {type: "input", name: "title", label: "Title", className: "formlabel"},
+                {type: "button", name: "save", value: "Save", className: "formlabel", offsetLeft: 70}
+
+            ];
+
+            var addTrainingForm = newCourseWin.attachForm(formData);
+
+            addTrainingForm.attachEvent("onButtonClick", function (name) {
+
+                if (addTrainingForm.getItemValue('title')) {
+                    if (name == 'save') {
+                        addTrainingForm.send(url + "4", "POST", function (loader, response) {
+                            var parsedJSON = eval('(' + response + ')');
+                            dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                            courses_grid.deleteChildItems(0);
+                            courses_grid.loadXML(url + '19');
+                        });
+                    }
+                } else {
+                    dhtmlx.alert('Employee field empty');
+                }
+            });
+
+            break;
+        case 'refresh':
+            courses_grid.deleteChildItems(0);
+            // courses_grid.loadXML(url + '19');
+            courses_grid.loadXML(WWWROOT + "nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + TRAINEE.id);
+
+            break;
+
+        case 'delete':
+            //            var rowId = courses_grid.getSelectedItemId();
+            var rowId = (PROJECT_ID) ? PROJECT_ID : courses_grid.getSelectedItemId();
+            if (rowId) {
+                dhtmlx.confirm({
+                    title: "Confirm",
+                    type: "confirm",
+                    text: "Delete this course?",
+                    callback: function (ok) {
+                        if (ok) {
+                            $.ajax({
+                                url: url + "5", type: "POST", data: {id: rowId},
+                                success: function (response) {
+                                    var parsedJSON = eval('(' + response + ')');
+                                    if (parsedJSON != null) {
+                                        dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                                        courses_grid.deleteChildItems(0);
+                                        courses_grid.loadXML(url + '19');
+                                    }
+                                }
+                            });
+
+                        } else {
+                            return false;
+                        }
+                    }
+                });
+            } else {
+                dhtmlx.alert('Please select record')
+            }
+            break;
+    }
+}
+
+
+function onCourses_gridCellEdit(stage, rId, cInd, nValue, oValue) {
+    // your code here
+    const column = courses_grid.getColumnId(cInd);
+    if (stage === 2) {
+        $.ajax({
+            url: url + "6", type: "POST", data: {id: rId, field: column, value: nValue},
+            success: function (response) {
+                var parsedJSON = eval('(' + response + ')');
+                if (parsedJSON != null) {
+                    dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                    courses_grid.clearAndLoad(url + '19');
+                }
+            }
+        });
+    }
 }

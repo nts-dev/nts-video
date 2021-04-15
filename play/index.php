@@ -9,11 +9,14 @@ error_reporting(E_ALL);
 //    header('Access-Control-Allow-Credentials: true');
 //    header('Access-Control-Max-Age: 86400');    // cache for 1 day
 
+include ('../../auth.php');
+include('../api/session/Commons.php');
 
-$ROOT = "http://". $_SERVER['HTTP_HOST']. "/nts-programs/nts-video";
+
+$ROOT = WEBURL . \Boot::WWWROOT. "/nts-video";
 $id = $_GET['id'];
 
-include('../api/session/Commons.php');
+
 
 
 $bootstrap = App::getInstance();
@@ -34,9 +37,9 @@ $resultArray = $mediaService->findById($id);
 <head>
     <meta charset="utf-8">
     <title>Player</title>
-<!--    <link href="../lib/video-js/video-js.css" rel="stylesheet">-->
-<!--    <link href="../lib/videojs-share/video-share.css" rel="stylesheet">-->
-    <link href="../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <?php
+        CSSPackage::BOOTSTRAP();
+    ?>
 
 <style>
     html, body {height: 100%}
@@ -48,6 +51,9 @@ $resultArray = $mediaService->findById($id);
 </head>
 
 <body>
+
+
+
 <div class="container-fluid h-100">
 <div class="row justify-content-center h-100">
     <video

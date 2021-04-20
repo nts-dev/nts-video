@@ -60,4 +60,35 @@ class RequestType
     const PROJECT_ADD = 4;
     const PROJECT_EDIT = 5;
     const PROJECT_COMBO = 6;
+
+
+    /**
+     *
+     *
+     *
+     * Comment types
+     *
+     *
+     */
+
+
+    const COMMENT_FIND = 2;
+    const COMMENT_ADD = 4;
+    const COMMENT_EDIT = 5;
+
+
+
+    /**
+     *
+     *
+     *
+     * Timeline info types
+     *
+     *
+     */
+
+
+    const TIMELINE_FIND = 2;
+    const TIMELINE_ADD = 4;
+    const TIMELINE_EDIT = 5;
 }

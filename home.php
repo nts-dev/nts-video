@@ -31,6 +31,7 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
     <?php
 
     JSPackage::DHTMLX();
+    JSPackage::JQUERY();
 
     ?>
 
@@ -48,7 +49,7 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
     }
 
     const WWWROOT = "<?php echo WEBURL . \Boot::WWWROOT ?>";
-    const baseURL = "<?php echo Boot::WWWROOT . 'nts-video/' ?>";
+    const baseURL = "<?php echo WEBURL . \Boot::WWWROOT . 'nts-video/' ?>";
 
 </script>
 <script src="view/js/layout.js"></script>

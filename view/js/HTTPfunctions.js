@@ -8,10 +8,7 @@
 
 let contentIndex = 0;
 let mediaIndex = 0;
-
 let PROJECT_ID = 0;
-
-
 let fileId = 0;
 
 
@@ -63,7 +60,6 @@ audioGeneratorGrid.attachEvent("onXLE", function (grid_obj) {
 
 media_files_grid.attachEvent("onXLS", function (grid_obj) {
     mediaLayout.cells('a').progressOn();
-
 });
 
 
@@ -89,42 +85,24 @@ audioLanguageGrid.attachEvent("onXLE", function (grid_obj) {
 //-----------------------------functions-------------------------------------------
 
 
-function saveFilmScript() {
-    var mediaId = media_files_grid.getSelectedRowId();
-    if (mediaId) {
-
-        var contentIframe = scriptMainLayout.cells('a').getFrame();
-        var content = contentIframe.contentWindow.tinyMCE.activeEditor.getContent();
-        $.ajax({
-            url: url + "59", type: "POST", data: {id: mediaId, content: content}, success: function (response) {
-                var parsedJSON = eval('(' + response + ')');
-                if (parsedJSON != null) {
-                    dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                }
-            }
-        });
-
-
-    } else {
-        dhtmlx.alert("Please select media Item from main content")
-    }
-}
-
 function saveMediaInfo() {
     const mediaId = media_files_grid.getSelectedRowId();
     if (!mediaId) {
         dhtmlx.alert("Please select media Item from main content")
         return
     }
-    const mediaCommentContentIframe = commentLayout.cells('c').getFrame();
-    const content = mediaCommentContentIframe.contentWindow.tinyMCE.activeEditor.getContent();
+    const timelineInfoIframe = commentLayout.cells('c').getFrame();
+    const content = timelineInfoIframe.contentWindow.tinyMCE.activeEditor.getContent();
+
+
     $.ajax({
-        url: url + "63", type: "POST", data: {id: mediaId, content: content},
+        url: TIMELINE_URL + "4",
+        type: "POST",
+        data: {upload_id: mediaId, text: content},
+        dataType: "json",
         success: function (response) {
-            const parsedJSON = eval('(' + response + ')');
-            if (parsedJSON != null) {
-                dhtmlx.message({title: 'Success', text: parsedJSON.message});
-            }
+            console.log(response)
+            dhtmlx.message({title: 'Success', text: "Update success"});
         }
     });
 }
@@ -138,15 +116,17 @@ function saveMediaComment() {
         return
     }
 
-    const mediaCommentContentIframe = commentLayout.cells('b').getFrame();
-    const content = mediaCommentContentIframe.contentWindow.tinyMCE.activeEditor.getContent();
+    const commentIframe = commentLayout.cells('b').getFrame();
+    const content = commentIframe.contentWindow.tinyMCE.activeEditor.getContent();
+
+
     $.ajax({
-        url: url + "62", type: "POST", data: {id: mediaId, content: content},
+        url: COMMENT_URL + "4",
+        type: "POST",
+        data: {upload_id: mediaId, text: content},
+        dataType: "json",
         success: function (response) {
-            const parsedJSON = eval('(' + response + ')');
-            if (parsedJSON != null) {
-                dhtmlx.message({title: 'Success', text: parsedJSON.message});
-            }
+            dhtmlx.message({title: 'Success', text: "Update success"});
         }
     });
 }
@@ -266,6 +246,9 @@ function onModules_toolbar_formClicked(id) {
                 break;
 
         }
+
+    else
+        dhtmlx.alert('Please select records for Project and Content')
 }
 
 function onMedia_files_toolbarClicked(id) {
@@ -652,44 +635,37 @@ function onMedia_files_gridRowSelect(id) {
     updateMediaCommentIframeContent(id)
     updateMediaInfoIframeContent(id)
     updateScriptIframeContent(id)
-//
-// //    subtitleMiniTemplateTimingGrid.clearAndLoad(url + "25&id=" + id);
-//     $.ajax({
-//         url: url + "18", type: "POST", data: {id: id}, success: function (response) {
-//             var parsedJSON = eval('(' + response + ')');
-//             if (parsedJSON != null && parsedJSON.content != "null") {
-// //                contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content); ..............................To be added later..............
-//             }
-//         }
-//     });
-
-
 }
 
 
 function updateScriptIframeContent(id) {
     const _contentIframe = scriptMainLayout.cells('a').getFrame();
     _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
-    $.ajax({
-            url: url + "60", type: "POST", data: {id: id}, success: function (response) {
-                const parsedJSON = eval('(' + response + ')');
-                if (parsedJSON != null && parsedJSON.response === true)
-                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
-
-            }
-        }
-    );
+    // $.ajax({
+    //         url: url + "60", type: "POST", data: {id: id}, success: function (response) {
+    //             const parsedJSON = eval('(' + response + ')');
+    //             if (parsedJSON != null && parsedJSON.response === true)
+    //                 _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+    //
+    //         }
+    //     }
+    // );
 }
+
 
 function updateMediaCommentIframeContent(id) {
     const _contentIframe = commentLayout.cells('b').getFrame();
     _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
     $.ajax({
-            url: url + "65", type: "POST", data: {id: id}, success: function (response) {
-                const parsedJSON = eval('(' + response + ')');
-                if (parsedJSON != null && parsedJSON.response === true)
-                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
+            url: COMMENT_URL + "2",
+            type: "POST",
+            data: {id: id},
+            dataType: "json",
+            success: function (response) {
 
+                if (response.length > 0) {
+                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(response[0].content);
+                }
             }
         }
     );
@@ -699,12 +675,18 @@ function updateMediaCommentIframeContent(id) {
 function updateMediaInfoIframeContent(id) {
     const _contentIframe = commentLayout.cells('c').getFrame();
     _contentIframe.contentWindow.tinyMCE.activeEditor.setContent('');
-    $.ajax({
-            url: url + "64", type: "POST", data: {id: id}, success: function (response) {
-                const parsedJSON = eval('(' + response + ')');
-                if (parsedJSON != null && parsedJSON.response === true)
-                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(parsedJSON.content);
 
+    $.ajax({
+            url: TIMELINE_URL + "2",
+            type: "POST",
+            data: {id: id},
+            dataType: "json",
+            success: function (response) {
+
+                if (response.length > 0) {
+                    console.log(response[0].content)
+                    _contentIframe.contentWindow.tinyMCE.activeEditor.setContent(response[0].content);
+                }
             }
         }
     );

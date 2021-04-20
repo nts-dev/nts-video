@@ -1,8 +1,18 @@
 <?php
 
 
+use session\Network;
+
 class MediaInfoService implements Crud
 {
+
+    const ENDPOINT = "timelineinfo";
+    private Network $network;
+
+    public function __construct($session)
+    {
+        $this->network = new Network($session);
+    }
 
     function findAll()
     {
@@ -11,7 +21,12 @@ class MediaInfoService implements Crud
 
     function findById($id)
     {
-        // TODO: Implement findById() method.
+        assert($id != null);
+
+        return $this->network->invoke(
+            self::ENDPOINT . "/" . $id,
+            \session\NetworkMethod::GET
+        );
     }
 
     function deleteById($id, $object)
@@ -21,11 +36,23 @@ class MediaInfoService implements Crud
 
     function edit($id, $object)
     {
-        // TODO: Implement edit() method.
+        assert($object != null);
+
+        return $this->network->invoke(
+            self::ENDPOINT . '/' . $id,
+            \session\NetworkMethod::PUT,
+            $object
+        );
     }
 
     function save($object)
     {
-        // TODO: Implement save() method.
+        assert($object != null);
+
+        return $this->network->invoke(
+            self::ENDPOINT,
+            \session\NetworkMethod::POST,
+            $object
+        );
     }
 }

@@ -1,4 +1,19 @@
-var myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
+let myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
+
+/**
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ * API END POINTS
+ *
+ * @type {string}
+ */
 const url = baseURL+"app/Stream/data.php?action=";
 const PARENT_URL = baseURL+"api/session/"
 
@@ -8,8 +23,12 @@ const VIDEO_URL = PARENT_URL + "video.php?trainee=" + TRAINEE.id + "&identifier=
 const MODULE_URL = PARENT_URL + "module.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 const PROJECT_URL = PARENT_URL + "project.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 
+const COMMENT_URL = PARENT_URL + "comment.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 
-var media_file = '';
+const TIMELINE_URL = PARENT_URL + "timelineInfo.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
+
+
+let media_file = '';
 let mediaFilesGridHeight = 0;
 
 

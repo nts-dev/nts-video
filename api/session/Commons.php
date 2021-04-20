@@ -34,6 +34,9 @@ include(ROOTPATH . '/crudbase/IModuleService.php');
 include(ROOTPATH . '/crudbase/Crud.php');
 include(ROOTPATH . '/media/MediaService.php');
 include(ROOTPATH . '/content/ContentService.php');
+include(ROOTPATH . '/mediacomment/CommentService.php');
+include(ROOTPATH . '/mediainfo/MediaInfoService.php');
+
 
 
 

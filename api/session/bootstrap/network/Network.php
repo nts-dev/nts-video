@@ -44,10 +44,14 @@ class Network
             return $data->data;
 
         } catch (RequestException $e) {
-            echo Psr7\Message::toString($e->getRequest());
-            if ($e->hasResponse()) {
-                echo Psr7\Message::toString($e->getResponse());
-            }
+            http_response_code(401);
+            return [
+                'error' => "Resource not found",
+            ];
+//            echo Psr7\Message::toString($e->getRequest());
+//            if ($e->hasResponse()) {
+//                echo Psr7\Message::toString($e->getResponse());
+//            }
         }
     }
 

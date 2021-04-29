@@ -42,6 +42,7 @@ class XML
                 echo "<cell><![CDATA[" . $cell->updated_at . "]]></cell>";
                 echo "<cell><![CDATA[" . $cell->disk . "]]></cell>";
                 echo "<cell><![CDATA[" . $cell->videoLink_raw . "]]></cell>";
+                echo "<cell><![CDATA[" . $cell->hash . "]]></cell>";
                 echo "</row>";
             }
         }

@@ -251,15 +251,53 @@ function onModules_toolbar_formClicked(id) {
         dhtmlx.alert('Please select records for Project and Content')
 }
 
+
+const MediaContainer = {
+    isMedia: false,
+    type: null
+}
+
+/**
+ *
+ *
+ *
+ * Return object MediaContainer with bool and either video or audio from a string scan
+ */
+function getContainerType(url) {
+    if (url === null) return MediaContainer;
+
+    for (let vid of MEDIA_TYPE_VIDEO_SET)
+        if (url.includes(vid)) {
+            MediaContainer.isMedia = true;
+            MediaContainer.type = "video";
+        }
+
+    if (MediaContainer.isMedia) return MediaContainer;
+
+    for (let aud of MEDIA_TYPE_AUDIO_SET)
+        if (url.includes(aud)) {
+            MediaContainer.isMedia = true;
+            MediaContainer.type = "video";
+        }
+
+    return MediaContainer;
+}
+
 function onMedia_files_toolbarClicked(id) {
+    if (id === null || id < 1) return;
     const rowId = ModulecontentGrid.getSelectedRowId();
     const mediaId = media_files_grid.getSelectedRowId();
 
 
     // if (mediaId) {
     const rowIndex = media_files_grid.getRowIndex(mediaId);
-    // const hashColIndex = media_files_grid.getColIndexById("hash");
-    // const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
+    const hashColIndex = media_files_grid.getColIndexById("hash");
+    const uriColIndex = media_files_grid.getColIndexById("url");
+    const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
+    const uri = media_files_grid.cells(mediaId, uriColIndex).getValue();
+    const container = getContainerType(uri);
+
+    console.log(container)
 
     switch (id) {
         case 'new':
@@ -279,8 +317,9 @@ function onMedia_files_toolbarClicked(id) {
                  */
                 const objMedia = {
                     id: mediaId,
-                    hash: "",
-                    title: "media title"
+                    hash: hash,
+                    title: "media title",
+                    video: container.type,
                 };
                 startMediaPlayerWindow(objMedia);
 

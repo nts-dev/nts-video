@@ -3,7 +3,7 @@
 
 
 const playerWinWidth = 710;
-const playerWinHeight = 600;
+const playerWinHeight = 680;
 
 // const playerWinHeight = playerWinHeightExact > 560 ? playerWinHeightExact : 560;
 
@@ -30,8 +30,8 @@ function startMediaPlayerWindow(media) {
     playerLayout.cells('b').hideHeader();
     playerLayout.cells('a').setHeight(playerWinHeight * 0.75)
     playerLayout.cells('b').setHeight(playerWinHeight * 0.25);
-    playerLayout.cells('a').attachURL(baseURL +"play/?id="
-        + media.id
+    playerLayout.cells('a').attachURL(baseURL + "play/?id="
+        + media.hash
         + '&showinfo=true&showthumbs='
         + shareProps.allowThumbs
         + "&identifier=" + TRAINEE.identifier
@@ -57,9 +57,9 @@ function startMediaPlayerWindow(media) {
     const checkPropertiesForm = shareLayout.cells('a').attachForm(formData)
 
 
-    const mediaUrl = baseURL + 'play?id=' + media.id
+    const mediaUrl = baseURL + 'play?id=' + media.hash
 
-    var embedLink = '<iframe ' +
+    let embedLink = '<iframe ' +
         'src="' + mediaUrl + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +
         'width="560" ' +
         'height="325" ' +
@@ -89,28 +89,37 @@ function startMediaPlayerWindow(media) {
     });
 
 
-    shareLayout.cells("b").attachURL(baseURL+ "app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
+    shareLayout.cells("b").attachURL(baseURL + "app/share_vidoe_code.php?id=filesFrame&name=filesIframe");
 
 
     playerWindow.attachEvent("onMaximize", function (win) {
         // your code here
-        playerLayout.cells('a').setHeight(myHeight * 0.8);
+        playerLayout.cells('a').setHeight(myHeight * 0.7);
     });
 
     playerWindow.attachEvent("onMinimize", function (win) {
         // your code here
-        playerLayout.cells('b').setHeight(playerWinHeight * 0.2);
+        playerLayout.cells('b').setHeight(playerWinHeight * 0.3);
     });
 
+    // playerWindow.attachEvent("onClose", function (win) {
+    //     console.log(MediaContainer);
+    //     console.log("Deactivating active container");
+    //     MediaContainer.type = null;
+    //     MediaContainer.isMedia = false;
+    //     console.log(MediaContainer);
+    //     playerWindow.close();
+    // });
 
     shareLayout.attachEvent("onContentLoaded", function (id) {
         updateEmbedLink(embedLink)
     });
 
     function updateEmbedLink(embedLink) {
+        const command = media.video ? "<%play:video=" + media.hash + "%>" : "<%play:audio=" + media.hash + "%>";
         const ifr = shareLayout.cells('b').getFrame();
-        const content =  "Iframe   "+ embedLink + " \n \nUrl       "+ mediaUrl;
-        ifr.contentWindow.setContent( content);
+        const content = "Iframe   " + embedLink + " \n \nUrl       " + mediaUrl + " \n \nCommand  " + command;
+        ifr.contentWindow.setContent(content);
     }
 }
 

@@ -14,22 +14,48 @@ let myWidth, myHeight, global_skin = 'dhx_terrace', grid_skin = 'dhx_web';
  *
  * @type {string}
  */
-const url = baseURL+"app/Stream/data.php?action=";
-const PARENT_URL = baseURL+"api/session/"
-
-
-
+const url = baseURL + "app/Stream/data.php?action=";
+const PARENT_URL = baseURL + "api/session/"
 const VIDEO_URL = PARENT_URL + "video.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 const MODULE_URL = PARENT_URL + "module.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 const PROJECT_URL = PARENT_URL + "project.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
-
 const COMMENT_URL = PARENT_URL + "comment.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
-
 const TIMELINE_URL = PARENT_URL + "timelineInfo.php?trainee=" + TRAINEE.id + "&identifier=" + TRAINEE.identifier + "&action=";
 
 
 let media_file = '';
 let mediaFilesGridHeight = 0;
+
+const MEDIA_TYPE_VIDEO = [
+    //videos
+    'mp4',
+    'MP4',
+    'MKV',
+    'mkv',
+    'AVI',
+    'avi',
+    'MOV',
+    'mov',
+];
+
+const MEDIA_TYPE_AUDIO = [
+    //audio
+    'WAV',
+    'wav',
+    'AIFF',
+    'aiff',
+    'AAC',
+    'aac',
+    'OGG',
+    'ogg',
+    'WMA',
+    'wma',
+    'MP3',
+    'mp3'
+]
+
+const MEDIA_TYPE_AUDIO_SET = new Set(MEDIA_TYPE_AUDIO);
+const MEDIA_TYPE_VIDEO_SET = new Set(MEDIA_TYPE_VIDEO);
 
 
 if (typeof (window.innerWidth) == 'number') {
@@ -98,11 +124,6 @@ courses_grid.enableTreeLines(true);
 courses_grid.loadXML(WWWROOT + "nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + TRAINEE.id);
 
 
-
-
-
-
-
 courses_grid.attachEvent("onXLE", function (grid_obj, count) {
     // courses_grid.selectRow(0);
     onCourses_gridRowSelect('1');
@@ -141,7 +162,7 @@ mediaFilesGridHeight = myHeight - ((myHeight * 0.24) + (myHeight * 0.13));
 
 var ModulecontentGrid = Module_layout.cells('a').attachGrid();
 ModulecontentGrid.setIconsPath('./preview/codebase/imgs/');
-ModulecontentGrid.setHeader(["ID",  "Content Name", "Description", "Date updated"]);
+ModulecontentGrid.setHeader(["ID", "Content Name", "Description", "Date updated"]);
 ModulecontentGrid.setInitWidthsP('7,*,*,15');
 ModulecontentGrid.init();
 
@@ -162,7 +183,7 @@ const media_files_grid = mediaLayout.cells('a').attachGrid();
 media_files_grid.setIconsPath('./preview/codebase/imgs/');
 
 media_files_grid.setHeader(["ID", "Title", "Description", "Author", "Views", "Uploaded", "map", "Url", "Hash#",]);
-media_files_grid.setColumnIds("ID,file_name, description, author, views, Uploaded, disk, url, hash");
+media_files_grid.setColumnIds("ID,file_name,description,author,views,Uploaded,disk,url,hash");
 media_files_grid.setInitWidthsP('5,15,*,8,5,10,*,*,*');
 media_files_grid.init();
 /*

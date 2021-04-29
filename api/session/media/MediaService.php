@@ -77,4 +77,14 @@ class MediaService implements Crud, IMediaService
         );
 
     }
+
+    function findByHashing($hash)
+    {
+        assert($hash != null);
+
+        return $this->network->invoke(
+            self::ENDPOINT . "/hash/" . $hash,
+            \session\NetworkMethod::GET
+        );
+    }
 }

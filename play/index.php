@@ -13,7 +13,7 @@ include('../../auth.php');
 include('../api/session/Commons.php');
 
 
-$ROOT = WEBURL . \Boot::WWWROOT . "/nts-video";
+$ROOT = WEBURL . \Boot::WWWROOT . "/nts-video-api/";
 $id = $_GET['id'];
 
 
@@ -25,9 +25,7 @@ $session = $bootstrap::startSessionIfNotAvailable(
 
 $mediaService = new MediaService($session);
 
-$resultArray = $mediaService->findById($id);
-
-//var_dump(parse_url($resultArray->videoLink_raw));
+$resultArray = $mediaService->findByHashing(trim($id));
 
 
 ?>

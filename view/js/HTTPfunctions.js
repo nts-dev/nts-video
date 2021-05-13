@@ -317,6 +317,7 @@ function onMedia_files_toolbarClicked(id) {
                  */
                 const objMedia = {
                     id: mediaId,
+                    url: uri,
                     hash: hash,
                     title: "media title",
                     video: container.type,

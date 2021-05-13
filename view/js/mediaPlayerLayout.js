@@ -58,7 +58,7 @@ function startMediaPlayerWindow(media) {
 
 
     // const mediaUrl = baseURL + 'play?id=' + media.hash
-    const mediaUrl = WWWROOT + media.url
+    const mediaUrl =  media.url
 
     let embedLink = '<iframe ' +
         'src="' + mediaUrl + '&showinfo=' + shareProps.allowInfo + '&showthumbs=' + shareProps.allowThumbs + '" ' +

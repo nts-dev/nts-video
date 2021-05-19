@@ -10,6 +10,7 @@ let contentIndex = 0;
 let mediaIndex = 0;
 let PROJECT_ID = 0;
 let fileId = 0;
+let isNewContentItemRecord = false;
 
 
 courses_toolbar.attachEvent("onClick", onCourses_toolbarClicked);
@@ -30,11 +31,6 @@ audioGeneratorGrid.attachEvent("onRowSelect", onAudioGeneratorGridSelected);
 audioGeneratorGrid.attachEvent("onEditCell", onAudioGeneratorGridEditCell);
 audioMovieLayoutToolbar.attachEvent("onClick", onAudioMovieLayoutToolbarClicked);
 audioMovieGrid.attachEvent("onRowSelect", onAudioMovieGridSelected);
-
-
-// ModulecontentGrid.clearAndLoad(MODULE_URL + "1");
-
-// media_files_grid.clearAndLoad(VIDEO_URL + '1');
 
 
 //----------------------------initial xml loads----------------------------------
@@ -143,11 +139,16 @@ function onCourses_gridRowSelect(id) {
 
 
 function onModules_toolbarClicked(id) {
-    var course = courses_grid.getSelectedItemId();
+    const course = courses_grid.getSelectedItemId();
+    const contentId = ModulecontentGrid.getSelectedRowId();
     // const course = projectFromProject.id
     switch (id) {
-
-
+        case 'new':
+            addContentRecord(course, contentId);
+            break;
+        case 'delete':
+            deleteContentRecord(course, contentId);
+            break;
         case 'default':
             onCourses_gridRowSelect(course);
             break;
@@ -156,6 +157,46 @@ function onModules_toolbarClicked(id) {
             ModulecontentGrid.clearAndLoad(MODULE_URL + "1");
             break;
     }
+}
+
+function addContentRecord(courseId, contentId) {
+    if (courseId) {
+        isNewContentItemRecord = true;
+        const dummyId = ((contentId ? parseInt(contentId) : 0) + 2) + "";
+        ModulecontentGrid.addRow(dummyId, dummyId);
+        content_form.clear();
+        ModulecontentGrid.selectRow(ModulecontentGrid.getRowIndex(dummyId));
+        content_form.setItemValue("subject_id", courseId);
+        dhtmlx.message({title: 'Success', text: 'New record added. \n \n Fill the form to save your changes'});
+    } else
+        dhtmlx.alert('Please select a record from Projects')
+}
+
+function deleteContentRecord(courseId, contentId) {
+    if (contentId) {
+        dhtmlx.confirm({
+            title: "Confirm",
+            type: "confirm",
+            text: "Delete this content?",
+            callback: function (ok) {
+                if (ok) {
+                    const callbackFromDeleteAction = function (response) {
+                        console.log(response)
+                        if (response != null) {
+                            dhtmlx.message({title: 'Success', text: "Delete success"});
+                            ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
+                        }
+                    }
+                    content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
+                } else {
+                    return false;
+                }
+            }
+        });
+    } else {
+        dhtmlx.alert('Please select record')
+    }
+
 }
 
 function sortContent(rowId, course, type, nextId, index) {
@@ -180,8 +221,6 @@ function onModulecontentGridRowSelect(id) {
 }
 
 
-let isNewItem = false;
-
 function onModules_toolbar_formClicked(id) {
     const contentId = ModulecontentGrid.getSelectedRowId();
 
@@ -194,8 +233,8 @@ function onModules_toolbar_formClicked(id) {
                 // if(courseId < 1 || ModulecontentGrid.getSelectedRowId() < 1) return;
                 const callback = function (response) {
                     // your code here
-                    if (isNewItem)
-                        isNewItem = false;
+                    if (isNewContentItemRecord)
+                        isNewContentItemRecord = false;
                     // const parsedJSON = eval('(' + data.response + ')');
                     console.log(response)
                     if (response != null) {
@@ -203,48 +242,10 @@ function onModules_toolbar_formClicked(id) {
                         ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
                     }
                 }
-                isNewItem
+                isNewContentItemRecord
                     ? content_form.send(MODULE_URL + "4", "post", callback)
                     : content_form.send(MODULE_URL + "5", "post", callback)
                 break;
-            case 'new':
-
-                isNewItem = true;
-                const dummyId = contentId + 2;
-                ModulecontentGrid.addRow(dummyId, dummyId);
-                content_form.clear();
-                ModulecontentGrid.selectRow(ModulecontentGrid.getRowIndex(dummyId));
-                content_form.setItemValue("subject_id", courseId);
-
-                break;
-
-            case 'delete':
-                const rowId = ModulecontentGrid.getSelectedRowId();
-                if (rowId) {
-                    dhtmlx.confirm({
-                        title: "Confirm",
-                        type: "confirm",
-                        text: "Delete this content?",
-                        callback: function (ok) {
-                            if (ok) {
-                                const callbackFromDeleteAction = function (response) {
-                                    console.log(response)
-                                    if (response != null) {
-                                        dhtmlx.message({title: 'Success', text: "Delete success"});
-                                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
-                                    }
-                                }
-                                content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
-                            } else {
-                                return false;
-                            }
-                        }
-                    });
-                } else {
-                    dhtmlx.alert('Please select record')
-                }
-                break;
-
         }
 
     else

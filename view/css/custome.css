@@ -362,6 +362,12 @@ div.gridbox table.obj{
     }
 }
 
+.dhtmlx-warning-message{
+    font-weight:bold !important;
+    color:white !important;
+    background-color: #d46565 !important;
+}
+
 div.gridbox_dhx_web.gridbox table.obj.row20px tr.rowselected td {
     background-color: rgb(191, 233, 255)!important;
     border-right-color: rgb(191, 233, 255)!important;
@@ -373,8 +379,12 @@ div.dhxcombo_dhx_terrace input.dhxcombo_input {
 }
 
 .dhx_toolbar_dhx_terrace div.dhx_toolbar_btn i {
-    font-size: 1.6em !important;
+    font-size: 1.2em !important;
     color:#3da0e3 !important; 
+}
+
+.fa-trash::before {
+    color: rgba(227, 86, 86, 0.51) !important;
 }
 
 div.dhx_toolbar_poly_dhx_terrace td.td_btn_img i {

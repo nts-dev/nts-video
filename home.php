@@ -38,15 +38,17 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 
 </head>
 <body>
-<div id="videoAppHomepage" style="width:98%;height:100%; margin-left: 1%"></div>
+<div id="videoAppHomepage" style="width:100%;height:100%;"></div>
 
 <script>
 
     const TRAINEE = { //TODO
-        //id: <?//= $userBO->getAttendent() ?>//,
         id: 20196,
         identifier: "1kenan"
     }
+    //const ID = "<?//= $eid ?>//";
+    //const identifier = "<?//= $identifier ?>//";
+    //const TRAINEE = {id: ID, identifier: identifier,}
 
     const WWWROOT = "<?php echo WEBURL . \Boot::WWWROOT ?>";
     const baseURL = "<?php echo WEBURL . \Boot::WWWROOT . 'nts-video/' ?>";

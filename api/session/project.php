@@ -34,7 +34,7 @@ switch ($action) {
 
                 $projects->id = (int) $project_item["id"];
                 $projects->subject_title = $project_item["title"];
-                $projects->subject_description = $service::generateProjectId( $project_item["id"]);
+                $projects->subject_description = ProjectUtil::generateProjectId( $project_item["id"]);
 
                 $projectObj->data[] = $projects;
 

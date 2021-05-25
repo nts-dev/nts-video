@@ -102,7 +102,7 @@ class XML
 
         foreach ($resultArray as $cell) {
             echo '<option value="' . $cell['id'] . '">';
-            echo "<![CDATA[" . $cell['title'] . "]]>";
+            echo "<![CDATA[" . ProjectUtil::generateProjectId($cell['id']) . "| " . $cell['title'] . "]]>";
             echo '</option>';
         }
         echo "</complete>";

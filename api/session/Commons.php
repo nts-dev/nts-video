@@ -46,6 +46,7 @@ include(ROOTPATH . '/project/dao/ProjectQueryExecutor.php');
 include(ROOTPATH . '/project/dao/ProjectDao.php');
 include(ROOTPATH . '/project/dao/ProjectDaoImpl.php');
 include(ROOTPATH . '/project/ProjectService.php');
+include(ROOTPATH . '/bootstrap/resource/project/ProjectUtil.php');
 
 
 

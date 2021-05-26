@@ -292,14 +292,6 @@ function onMedia_files_toolbarClicked(id) {
 
     // if (mediaId) {
     const rowIndex = media_files_grid.getRowIndex(mediaId);
-    const hashColIndex = media_files_grid.getColIndexById("hash");
-    const uriColIndex = media_files_grid.getColIndexById("url");
-    const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
-    const uri = media_files_grid.cells(mediaId, uriColIndex).getValue();
-    const container = getContainerType(uri);
-
-    console.log(container)
-
     switch (id) {
         case 'new':
             uploadFile(rowId, 'new');
@@ -312,6 +304,11 @@ function onMedia_files_toolbarClicked(id) {
 
         case 'play': {
             if (mediaId) {
+                const hashColIndex = media_files_grid.getColIndexById("hash");
+                const uriColIndex = media_files_grid.getColIndexById("url");
+                const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
+                const uri = media_files_grid.cells(mediaId, uriColIndex).getValue();
+                const container = getContainerType(uri);
                 /**
                  * TODO implement hash
                  * @type {{id, title: string, hash}}

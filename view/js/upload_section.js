@@ -48,7 +48,7 @@ const myUploader = uploaderFileForm.getUploader("upload_file");
 
 uploaderFileForm.attachEvent("onFileAdd", function (realName) {
     const parent = projectFromProject.id
-    const accepted = ["mp3", "mp4", "ebm"];
+    const accepted = ["mp3", "mp4", "webm"];
     const ext = realName.substring(realName.length - 3, realName.length).toLowerCase();
 
     if (!accepted.includes(ext)) {

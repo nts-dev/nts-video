@@ -593,9 +593,9 @@ function attachFile(
     fileForm.attachEvent("onFileAdd", function (realName) {
         const accepted = ["mp3", "mp4", "webm"];
         const ext = realName.substring(realName.length - 3, realName.length);
-        if (!accepted.includes(ext)) {
-            dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4"})
-        }
+        // if (!accepted.includes(ext)) {
+        //     dhtmlx.alert({title: "Error", text: realName + " should be of type mp3/4"})
+        // }
 
     });
 

@@ -1,4 +1,8 @@
 <?php
+$id = $_GET['id'];
+shell_exec("cd C:\Program Files\Mozilla Firefox && Firefox -new-tab http://localhost/nts-programs/nts-video/play/player.php?id=$id");
+
+exit;
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -28,15 +32,18 @@ $mediaService = new MediaService($session);
 $resultArray = $mediaService->findByHashing(trim($id));
 
 
+
 ?>
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <title>Player</title>
+
     <?php
     CSSPackage::BOOTSTRAP();
     ?>
+<!--    <link href="https://vjs.zencdn.net/7.11.4/video-js.css" rel="stylesheet" />-->
 
     <style>
         html, body {
@@ -55,17 +62,48 @@ $resultArray = $mediaService->findByHashing(trim($id));
 
 <div class="container-fluid h-100">
     <div class="row justify-content-center h-100">
-        <video
-                id="my-video"
-                class="video-js video"
-                controls
-                preload="auto"
-                data-setup="{}">
-            <source src="<?php echo $resultArray->videoLink_raw; ?>" type="video/mp4">
 
-        </video>
+        <embed align=""
+               type="application/x-shockwave-flash"
+               name="myMovieName2"
+               bgcolor="#FFFFFF"
+               quality="high"
+               src="<?php echo $resultArray->videoLink_raw; ?>"
+               height="400" width="160"
+               href="<?php echo $resultArray->videoLink_raw; ?>"/>
+
+<!--        <video-->
+<!--                id="my-video"-->
+<!--                class="video-js"-->
+<!--                controls-->
+<!--                preload="auto"-->
+<!--                width="640"-->
+<!--                height="264"-->
+<!--                poster="MY_VIDEO_POSTER.jpg"-->
+<!--                data-setup="{}"-->
+<!--        >-->
+<!--            <source src="--><?php //echo $resultArray->videoLink_raw; ?><!--" type="video/mp4" />-->
+<!--            <p class="vjs-no-js">-->
+<!--                To view this video please enable JavaScript, and consider upgrading to a-->
+<!--                web browser that-->
+<!--                <a href="https://videojs.com/html5-video-support/" target="_blank"-->
+<!--                >supports HTML5 video</a-->
+<!--                >-->
+<!--            </p>-->
+<!--        </video>-->
+
+
+<!--        <video-->
+<!--                id="my-video"-->
+<!--                class="video-js video"-->
+<!--                controls-->
+<!--                preload="auto"-->
+<!--                data-setup="{}">-->
+<!--            <source src="--><?php //echo $resultArray->videoLink_raw; ?><!--" type="video/mp4">-->
+<!---->
+<!--        </video>-->
     </div>
 </div>
-
+<!--<script src="https://vjs.zencdn.net/7.11.4/video.min.js"></script>-->
 </body>
 </html>

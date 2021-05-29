@@ -1,6 +1,6 @@
 <?php
 $id = $_GET['id'];
-$command = "cd C:\Program Files\Mozilla Firefox && Firefox -new-tab http://" . $_SERVER['HTTP_HOST'] . "/nts-programs/nts-video/play/player.php?id=$id";
+$command = "cd C:\Program Files\Mozilla Firefox && Firefox -foreground -new-window http://localhost/nts-programs/nts-video/play/player.php?id=$id";
 shell_exec($command);
 
 exit;
@@ -62,15 +62,6 @@ $resultArray = $mediaService->findByHashing(trim($id));
 
 <div class="container-fluid h-100">
     <div class="row justify-content-center h-100">
-
-        <embed align=""
-               type="application/x-shockwave-flash"
-               name="myMovieName2"
-               bgcolor="#FFFFFF"
-               quality="high"
-               src="<?php echo $resultArray->videoLink_raw; ?>"
-               height="400" width="160"
-               href="<?php echo $resultArray->videoLink_raw; ?>"/>
 
         <!--        <video-->
         <!--                id="my-video"-->

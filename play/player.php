@@ -55,6 +55,7 @@ $resultArray = $mediaService->findByHashing(trim($id));
 
 <div class="container-fluid h-100">
     <div class="row justify-content-center h-100">
+
         <video
                 id="my-video"
                 class="video-js video"

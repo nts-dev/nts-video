@@ -320,7 +320,11 @@ function onMedia_files_toolbarClicked(id) {
                     title: "media title",
                     video: container.type,
                 };
-                startMediaPlayerWindow(objMedia);
+
+                $.get("http://" + location.host + "/nts-programs/nts-video/play/index.php?id=" + hash);
+
+                // window.open("http://" + location.host + "/nts-programs/nts-video/play/index.php?id=" + hash, '_blank').focus();
+                // startMediaPlayerWindow(objMedia);
 
             }
 

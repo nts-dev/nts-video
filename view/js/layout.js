@@ -154,7 +154,7 @@ var Module_layout = parentModuleTabbar.tabs('contentMain').attachLayout('3U');
 Module_layout.cells('a').setText('Contents');
 Module_layout.cells('a').setHeight(myHeight * 0.4);
 Module_layout.cells('b').setWidth(myWidth * 0.28);
-Module_layout.cells('b').hideHeader();
+Module_layout.cells('b').setText('');
 Module_layout.cells('c').hideHeader();
 
 mediaFilesGridHeight = myHeight - ((myHeight * 0.24) + (myHeight * 0.13));
@@ -230,21 +230,21 @@ media_files_toolbar.loadStruct('<toolbar>'
 var modules_toolbar_form = Module_layout.cells('b').attachToolbar();
 modules_toolbar_form.setIconset("awesome");
 modules_toolbar_form.loadStruct('<toolbar>'
-    + '<item type="button" id="new" text="New" img="fa fa-plus " /><item type="separator" id="sep_1" />'
+    // + '<item type="button" id="new" text="New" img="fa fa-plus " /><item type="separator" id="sep_1" />'
     + '<item type="button" id="save" text="Save" img="fa fa-file " /><item type="separator" id="sep_2" />'
-    + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_4" />'
+    // + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_4" />'
     + '</toolbar>', function () {
 });
 
 modules_toolbar = Module_layout.cells('a').attachToolbar();
 modules_toolbar.setIconset("awesome");
 modules_toolbar.loadStruct('<toolbar>'
-    // + '<item type="button" id="new" text="New Content" img="fa fa-plus " /><item type="separator" id="sep_1" />'
-    // + '<item type="button" id="up" text="Move up" img="fa fa-arrow-up" /><item type="separator" id="sep_2" />'
-    // + '<item type="button" id="down" text="Move Down" img="fa fa-arrow-down" /><item type="separator" id="sep_3" />'
-    // + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_4" />'
-    + '<item type="button" id="default" text="Default" img="fa fa-th-list fa-5x " /><item type="separator" id="sep_1" />'
-    + '<item type="button" id="all" text="Show All" img="fa fa-list-ol fa-5x" /><item type="separator" id="sep_2" />'
+    + '<item type="button" id="new" text="New Content" img="fa fa-plus " /><item type="separator" id="sep_1" />'
+    + '<item type="button" id="up" text="Move up" img="fa fa-arrow-up" /><item type="separator" id="sep_2" />'
+    + '<item type="button" id="down" text="Move Down" img="fa fa-arrow-down" /><item type="separator" id="sep_3" />'
+    + '<item type="button" id="default" text="Default" img="fa fa-th-list fa-5x " /><item type="separator" id="sep_5" />'
+    + '<item type="button" id="all" text="Show All" img="fa fa-list-ol fa-5x" /><item type="separator" id="sep_6" />'
+    + '<item type="button" id="delete" text="Delete" img="fa fa-trash" /><item type="separator" id="sep_4" />'
     + '</toolbar>', function () {
 });
 

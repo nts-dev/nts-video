@@ -37,9 +37,9 @@ audioMovieGrid.attachEvent("onRowSelect", onAudioMovieGridSelected);
 
 
 ModulecontentGrid.attachEvent("onXLE", function (grid_obj) {
-    ModulecontentGrid.selectRow(contentIndex);
-    var id = ModulecontentGrid.getRowId(contentIndex);
-    onModulecontentGridRowSelect(id);
+    // ModulecontentGrid.selectRow(contentIndex);
+    // var id = ModulecontentGrid.getRowId(contentIndex);
+    // onModulecontentGridRowSelect(id);
     Module_layout.cells('a').progressOff();
 });
 

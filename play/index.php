@@ -27,6 +27,9 @@ $mediaService = new MediaService($session);
 
 $resultArray = $mediaService->findByHashing(trim($id));
 
+//echo "<pre>";
+//print_r($resultArray);
+//exit;
 
 ?>
 <!DOCTYPE html>
@@ -60,8 +63,10 @@ $resultArray = $mediaService->findByHashing(trim($id));
                 class="video-js video"
                 controls
                 preload="auto"
+                poster="<?= $resultArray->thumbnailLink ?>"
                 data-setup="{}">
-            <source src="<?php echo $resultArray->videoLink_raw; ?>" type="video/mp4">
+            <source src="<?= $resultArray->videoLink_raw ?>" type="video/mp4">
+            <source src="<?= $resultArray->webm ?>" type="video/webm">
 
         </video>
     </div>

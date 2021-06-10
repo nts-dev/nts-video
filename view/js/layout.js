@@ -85,6 +85,12 @@ if (typeof (window.innerWidth) == 'number') {
 
 dhtmlx.skin = global_skin;
 
+let contentIndex = 0;
+let mediaIndex = 0;
+let PROJECT_ID = 0;
+let fileId = 0;
+let isNewContentItemRecord = false;
+
 var tutMainPrimary_layout = new dhtmlXLayoutObject({
 //    parent: document.body,
     parent: "videoAppHomepage",
@@ -111,6 +117,8 @@ courses_toolbar.loadStruct('<toolbar>'
     + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_3" />'
     + '</toolbar>', function () {
 });
+courses_toolbar.attachEvent("onClick", onCourses_toolbarClicked);
+
 
 const courses_grid = tutAdminPrimary.cells('a').attachTree();
 
@@ -122,12 +130,14 @@ courses_grid.enableItemEditor(1);
 courses_grid.enableTreeImages(false);
 courses_grid.enableTreeLines(true);
 courses_grid.loadXML(WWWROOT + "nts-project/Controller/php/projectsTree.php?branch=1&language=1&eid=" + TRAINEE.id);
+courses_grid.attachEvent("onSelect", onCourses_gridRowSelect);
+courses_grid.attachEvent("onEditCell", onCourses_gridCellEdit);
 
 
 courses_grid.attachEvent("onXLE", function (grid_obj, count) {
     // courses_grid.selectRow(0);
-    onCourses_gridRowSelect('1');
-    courses_grid.openItem('1');
+    // onCourses_gridRowSelect('1');
+    // courses_grid.openItem('1');
     tutAdminPrimary.cells('a').progressOff();
 });
 
@@ -147,9 +157,7 @@ parentModuleTabbar.setArrowsMode("auto");
 parentModuleTabbar.tabs('contentMain').setActive();
 
 
-//
 var Module_layout = parentModuleTabbar.tabs('contentMain').attachLayout('3U');
-
 
 Module_layout.cells('a').setText('Contents');
 Module_layout.cells('a').setHeight(myHeight * 0.4);
@@ -159,12 +167,58 @@ Module_layout.cells('c').hideHeader();
 
 mediaFilesGridHeight = myHeight - ((myHeight * 0.24) + (myHeight * 0.13));
 
+const modules_toolbar = Module_layout.cells('a').attachToolbar();
+modules_toolbar.setIconset("awesome");
+modules_toolbar.loadStruct('<toolbar>'
+    + '<item type="button" id="new" text="New Content" img="fa fa-plus " /><item type="separator" id="sep_1" />'
+    + '<item type="button" id="up" text="Move up" img="fa fa-arrow-up" /><item type="separator" id="sep_2" />'
+    + '<item type="button" id="down" text="Move Down" img="fa fa-arrow-down" /><item type="separator" id="sep_3" />'
+    + '<item type="button" id="default" text="Default" img="fa fa-th-list fa-5x " /><item type="separator" id="sep_5" />'
+    + '<item type="button" id="all" text="Show All" img="fa fa-list-ol fa-5x" /><item type="separator" id="sep_6" />'
+    + '<item type="button" id="delete" text="Delete" img="fa fa-trash" /><item type="separator" id="sep_4" />'
+    + '</toolbar>', function () {
+});
+modules_toolbar.attachEvent("onClick", onModules_toolbarClicked);
+
 
 var ModulecontentGrid = Module_layout.cells('a').attachGrid();
 ModulecontentGrid.setIconsPath('./preview/codebase/imgs/');
 ModulecontentGrid.setHeader(["ID", "Content Name", "Description", "Date updated"]);
 ModulecontentGrid.setInitWidthsP('7,*,*,15');
+ModulecontentGrid.attachEvent("onSelectStateChanged", onModulecontentGridRowSelect);
 ModulecontentGrid.init();
+
+ModulecontentGrid.attachEvent("onXLE", function (grid_obj) {
+    // ModulecontentGrid.selectRow(contentIndex);
+    // var id = ModulecontentGrid.getRowId(contentIndex);
+    // onModulecontentGridRowSelect(id);
+    Module_layout.cells('a').progressOff();
+});
+
+ModulecontentGrid.attachEvent("onXLS", function (grid_obj) {
+    Module_layout.cells('a').progressOn()
+});
+
+const content_formData = [
+    {type: "settings", position: "label-left", labelWidth: 100, inputWidth: 230, offsetLeft: 35},
+    {type: "input", label: "ID", className: "formlabel", name: "id", hidden: true},
+    {type: "input", label: "User", className: "formlabel", name: "user_id", hidden: true},
+    {type: "input", label: "ProjectID", className: "formlabel", name: "subject_id", hidden: true},
+    {type: "input", label: "Title", className: "formlabel", name: "title"},
+    // {type: "newcolumn"},
+    {type: "input", label: "Description", className: "formlabel", name: "description"},
+    {type: "calendar", label: "Date Updated", className: "formlabel", name: "updated_at"},
+];
+//
+
+var content_form = Module_layout.cells('b').attachForm(content_formData);
+
+var modules_toolbar_form = Module_layout.cells('b').attachToolbar();
+modules_toolbar_form.setIconset("awesome");
+modules_toolbar_form.addButton('save', 1, 'Save', 'fa fa-file', 'fa fa-file');
+
+modules_toolbar_form.attachEvent("onClick", onModules_toolbar_formClicked);
+
 
 const mediaPrimaryTabLayout = Module_layout.cells('c').attachLayout('1C');
 
@@ -179,21 +233,48 @@ mediaLayoutTabbar.tabs('media').setActive();
 const mediaLayout = mediaLayoutTabbar.cells('media').attachLayout('1C');
 mediaLayout.cells('a').hideHeader();
 
+const media_files_toolbar = mediaLayout.cells('a').attachToolbar();
+media_files_toolbar.setIconset("awesome");
+media_files_toolbar.addButton('new', 1, 'Upload', 'fa fa-upload','fa fa-upload');
+media_files_toolbar.addSeparator('sep1', 2);
+media_files_toolbar.addButton('download', 3, 'Download', 'fa fa-download', 'fa fa-download');
+media_files_toolbar.addSeparator('sep2', 4);
+media_files_toolbar.addButton('play', 5, 'Play', 'fa fa-play', 'fa fa-play');
+media_files_toolbar.addSeparator('sep3', 6);
+media_files_toolbar.addButton('replace', 7, 'Replace File', 'fa fa-copy', 'fa fa-copy');
+media_files_toolbar.addSeparator('sep4', 8);
+media_files_toolbar.addButton('up', 9, 'Up', 'fa fa-arrow-up', 'fa fa-arrow-up');
+media_files_toolbar.addSeparator('sep5', 10);
+media_files_toolbar.addButton('down', 11, 'Down', 'fa fa-arrow-down', 'fa fa-arrow-down');
+media_files_toolbar.addSeparator('sep6', 12);
+media_files_toolbar.addButton('delete', 13, 'Delete', 'fa fa-trash', 'fa fa-trash');
+media_files_toolbar.attachEvent("onClick", onMedia_files_toolbarClicked);
+
 const media_files_grid = mediaLayout.cells('a').attachGrid();
 media_files_grid.setIconsPath('./preview/codebase/imgs/');
 
 media_files_grid.setHeader(["ID", "Title", "Description", "Author", "Views", "Uploaded", "map", "Url", "Hash#",]);
 media_files_grid.setColumnIds("ID,file_name,description,author,views,Uploaded,disk,url,hash");
 media_files_grid.setInitWidthsP('5,15,*,8,5,10,*,*,*');
+media_files_grid.attachEvent("onRowSelect", onMedia_files_gridRowSelect);
 media_files_grid.init();
-/*
-echo "<cell><![CDATA[" . $vid['description'] . "]]></cell>";
-echo "<cell><![CDATA[" . $vid['user_first_name'] . "]]></cell>";
-echo "<cell><![CDATA[" . $vid['total_views'] . "]]></cell>";
-echo "<cell><![CDATA[" . $vid['updated_at'] . "]]></cell>";
-echo "<cell><![CDATA[" . $vid['disk'] . "]]></cell>";
-echo "<cell><![CDATA[" . $vid['videoLink_raw'] . "]]></cell>";
-*/
+
+
+media_files_grid.attachEvent("onXLS", function (grid_obj) {
+    mediaLayout.cells('a').progressOn();
+});
+
+
+media_files_grid.attachEvent("onXLE", function (grid_obj) {
+    mediaLayout.cells('a').progressOff();
+
+    media_files_grid.selectRow(media_files_grid.getRowsNum() - 1);
+    var id = media_files_grid.getSelectedRowId();
+    fileId = id;
+    onMedia_files_gridRowSelect(id);
+
+
+});
 
 const commentLayout = mediaLayoutTabbar.cells('comment').attachLayout('3T');
 commentLayout.cells('a').hideHeader();
@@ -212,56 +293,12 @@ const commentLayoutForm = commentLayout.cells('a').attachForm(mediaItemData);
 commentLayoutForm.setReadonly("ID", true);
 commentLayoutForm.setReadonly("mediaName", true);
 
-const media_files_toolbar = mediaLayout.cells('a').attachToolbar();
-media_files_toolbar.setIconset("awesome");
-media_files_toolbar.loadStruct('<toolbar>'
-    + '<item type="button" id="new" text="Upload" img="fa fa-upload " /><item type="separator" id="sep_1" />'
-    + '<item type="button" id="download" text="Download" img="fa fa-download " /><item type="separator" id="sep_2" />'
-    + '<item type="button" id="play" text="Play" img="fa fa-play " /><item type="separator" id="sep_7" />'
-    + '<item type="button" id="replace" text="Replace File" img="fa fa-copy " /><item type="separator" id="sep_3" />'
-    + '<item type="button" id="up" text="Up" img="fa fa-arrow-up" />'
-    + '<item type="button" id="down" text="Down" img="fa fa-arrow-down" /><item type="separator" id="sep_5" />'
-    + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_6" />'
-    //        + '<item type="button" id="regenerate" text="Generate Thumbs Texts" img="fa fa-cog " /><item type="separator" id="sep_7" />'
-    + '</toolbar>', function () {
-});
 
 
-var modules_toolbar_form = Module_layout.cells('b').attachToolbar();
-modules_toolbar_form.setIconset("awesome");
-modules_toolbar_form.loadStruct('<toolbar>'
-    // + '<item type="button" id="new" text="New" img="fa fa-plus " /><item type="separator" id="sep_1" />'
-    + '<item type="button" id="save" text="Save" img="fa fa-file " /><item type="separator" id="sep_2" />'
-    // + '<item type="button" id="delete" text="Delete" img="fa fa-trash " /><item type="separator" id="sep_4" />'
-    + '</toolbar>', function () {
-});
-
-modules_toolbar = Module_layout.cells('a').attachToolbar();
-modules_toolbar.setIconset("awesome");
-modules_toolbar.loadStruct('<toolbar>'
-    + '<item type="button" id="new" text="New Content" img="fa fa-plus " /><item type="separator" id="sep_1" />'
-    + '<item type="button" id="up" text="Move up" img="fa fa-arrow-up" /><item type="separator" id="sep_2" />'
-    + '<item type="button" id="down" text="Move Down" img="fa fa-arrow-down" /><item type="separator" id="sep_3" />'
-    + '<item type="button" id="default" text="Default" img="fa fa-th-list fa-5x " /><item type="separator" id="sep_5" />'
-    + '<item type="button" id="all" text="Show All" img="fa fa-list-ol fa-5x" /><item type="separator" id="sep_6" />'
-    + '<item type="button" id="delete" text="Delete" img="fa fa-trash" /><item type="separator" id="sep_4" />'
-    + '</toolbar>', function () {
-});
 
 
-const content_formData = [
-    {type: "settings", position: "label-left", labelWidth: 100, inputWidth: 230, offsetLeft: 35},
-    {type: "input", label: "ID", className: "formlabel", name: "id", hidden: true},
-    {type: "input", label: "User", className: "formlabel", name: "user_id", hidden: true},
-    {type: "input", label: "ProjectID", className: "formlabel", name: "subject_id", hidden: true},
-    {type: "input", label: "Title", className: "formlabel", name: "title"},
-    // {type: "newcolumn"},
-    {type: "input", label: "Description", className: "formlabel", name: "description"},
-    {type: "calendar", label: "Date Updated", className: "formlabel", name: "updated_at"},
-];
-//
 
-var content_form = Module_layout.cells('b').attachForm(content_formData);
+
 
 
 const mediaCommentTinyMCE = commentLayout.cells('b').attachURL(baseURL + "app/tinyMceDisplay_comments.php?id=mediacomment&name=mediacomment")

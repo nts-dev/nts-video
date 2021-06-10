@@ -54,6 +54,7 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
     const baseURL = "<?php echo WEBURL . \Boot::WWWROOT . 'nts-video/' ?>";
 
 </script>
+<script src="view/js/HTTPfunctions.js"></script>
 <script src="view/js/layout.js"></script>
 <script src="view/js/subtitleAudioLayout.js"></script>
 <script src="view/js/mediaPlayerLayout.js"></script>
@@ -61,8 +62,6 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 <script src="view/js/uploader_form.js"></script>
 <script src="view/js/upload_section.js"></script>
 <script src="view/js/filmScript.js"></script>
-
-<script src="view/js/HTTPfunctions.js"></script>
 
 </body>
 

@@ -1,86 +1,3 @@
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-//contats
-
-let contentIndex = 0;
-let mediaIndex = 0;
-let PROJECT_ID = 0;
-let fileId = 0;
-let isNewContentItemRecord = false;
-
-
-courses_toolbar.attachEvent("onClick", onCourses_toolbarClicked);
-courses_grid.attachEvent("onSelect", onCourses_gridRowSelect);
-courses_grid.attachEvent("onEditCell", onCourses_gridCellEdit);
-
-ModulecontentGrid.attachEvent("onRowSelect", onModulecontentGridRowSelect);
-modules_toolbar.attachEvent("onClick", onModules_toolbarClicked);
-modules_toolbar_form.attachEvent("onClick", onModules_toolbar_formClicked);
-media_files_toolbar.attachEvent("onClick", onMedia_files_toolbarClicked);
-media_files_grid.attachEvent("onRowSelect", onMedia_files_gridRowSelect);
-
-audioLanguageTabToolbar.attachEvent("onClick", onAudioLanguageTabToolbarClicked);
-audioLanguageGrid.attachEvent("onRowSelect", onAudioLanguageGridSelected);
-audioGeneratorTabToolbar.attachEvent("onClick", onAudioGeneratorTabToolbarClicked);
-audioTextTabToolbar.attachEvent("onClick", onAudioTextTabToolbarClicked);
-audioGeneratorGrid.attachEvent("onRowSelect", onAudioGeneratorGridSelected);
-audioGeneratorGrid.attachEvent("onEditCell", onAudioGeneratorGridEditCell);
-audioMovieLayoutToolbar.attachEvent("onClick", onAudioMovieLayoutToolbarClicked);
-audioMovieGrid.attachEvent("onRowSelect", onAudioMovieGridSelected);
-
-
-//----------------------------initial xml loads----------------------------------
-
-
-ModulecontentGrid.attachEvent("onXLE", function (grid_obj) {
-    // ModulecontentGrid.selectRow(contentIndex);
-    // var id = ModulecontentGrid.getRowId(contentIndex);
-    // onModulecontentGridRowSelect(id);
-    Module_layout.cells('a').progressOff();
-});
-
-ModulecontentGrid.attachEvent("onXLS", function (grid_obj) {
-    Module_layout.cells('a').progressOn()
-});
-
-audioGeneratorGrid.attachEvent("onXLE", function (grid_obj) {
-    audioGeneratorGrid.selectRow(0);
-    var id = audioGeneratorGrid.getRowId(0);
-    onAudioGeneratorGridSelected(id);
-//    audioSpeechLayout.cells('b').progressOff()
-});
-
-media_files_grid.attachEvent("onXLS", function (grid_obj) {
-    mediaLayout.cells('a').progressOn();
-});
-
-
-media_files_grid.attachEvent("onXLE", function (grid_obj) {
-    mediaLayout.cells('a').progressOff();
-
-    media_files_grid.selectRow(media_files_grid.getRowsNum() - 1);
-    var id = media_files_grid.getSelectedRowId();
-    fileId = id;
-    onMedia_files_gridRowSelect(id);
-
-
-});
-
-
-audioLanguageGrid.attachEvent("onXLE", function (grid_obj) {
-    audioLanguageGrid.selectRow(0);
-    var id = audioLanguageGrid.getRowId(0);
-    if (id > 0)
-        onAudioLanguageGridSelected(id);
-})
-
-//-----------------------------functions-------------------------------------------
-
-
 function saveMediaInfo() {
     const mediaId = media_files_grid.getSelectedRowId();
     if (!mediaId) {
@@ -139,16 +56,21 @@ function onCourses_gridRowSelect(id) {
 
 
 function onModules_toolbarClicked(id) {
-    const course = courses_grid.getSelectedItemId();
-    const contentId = ModulecontentGrid.getSelectedRowId();
+
+    var course = courses_grid.getSelectedItemId();
+
     // const course = projectFromProject.id
     switch (id) {
+
         case 'new':
-            addContentRecord(course, contentId);
+            addContentRecord(course);
             break;
+
         case 'delete':
+            var contentId = ModulecontentGrid.getSelectedRowId();
             deleteContentRecord(course, contentId);
             break;
+
         case 'default':
             onCourses_gridRowSelect(course);
             break;
@@ -156,47 +78,84 @@ function onModules_toolbarClicked(id) {
         case 'all':
             ModulecontentGrid.clearAndLoad(MODULE_URL + "1");
             break;
+
+        default:
+            break;
     }
 }
 
-function addContentRecord(courseId, contentId) {
-    if (courseId) {
-        isNewContentItemRecord = true;
-        const dummyId = ((contentId ? parseInt(contentId) : 0) + 2) + "";
-        ModulecontentGrid.addRow(dummyId, dummyId);
-        content_form.clear();
-        ModulecontentGrid.selectRow(ModulecontentGrid.getRowIndex(dummyId));
-        content_form.setItemValue("subject_id", courseId);
-        dhtmlx.message({title: 'Success', text: 'New record added. \n \n Fill the form to save your changes'});
-    } else
-        dhtmlx.alert('Please select a record from Projects')
+function addContentRecord(courseId) {
+
+    if (courseId == null) {
+        dhtmlx.alert({
+            type: "alert-error",
+            text: "Please select a record from Projects",
+            title: "Error!"
+        });
+        return;
+    }
+
+    let post_data = {title: "new", description: "new", subject_id: courseId};
+
+    $.ajax({
+        method: 'POST',
+        url: MODULE_URL + "4",
+        data: post_data,
+        statusCode: {
+            401: function () {
+                dhtmlx.alert("Not authenticated");
+            }
+        },
+        success: function (response) {
+
+            if (response != null) {
+
+                dhtmlx.message({title: 'Success', text: 'New record added. \n \n Fill the form to save your changes'});
+                ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId, function () {
+                    ModulecontentGrid.selectRowById(response.id);
+                });
+            } else {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "An error occurred!",
+                    title: "Error!"
+                });
+            }
+        }
+    });
 }
 
 function deleteContentRecord(courseId, contentId) {
-    if (contentId) {
-        dhtmlx.confirm({
-            title: "Confirm",
-            type: "confirm",
-            text: "Delete this content?",
-            callback: function (ok) {
-                if (ok) {
-                    const callbackFromDeleteAction = function (response) {
-                        console.log(response)
-                        if (response != null) {
-                            dhtmlx.message({title: 'Success', text: "Delete success"});
-                            ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
-                        }
-                    }
-                    content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
-                } else {
-                    return false;
-                }
-            }
+
+    if (contentId == null) {
+        dhtmlx.alert({
+            type: "alert-error",
+            text: "Please select a record to delete",
+            title: "Error!"
         });
-    } else {
-        dhtmlx.alert('Please select record')
+        return;
     }
 
+
+    dhtmlx.confirm({
+        title: "Confirm",
+        type: "confirm",
+        text: "Delete this content?",
+        callback: function (ok) {
+            if (ok) {
+                const callbackFromDeleteAction = function (response) {
+                    console.log(response)
+                    if (response != null) {
+                        dhtmlx.message({title: 'Success', text: "Delete success"});
+                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
+                    }
+                }
+                content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
+            } else {
+                return false;
+            }
+        }
+    });
 }
 
 function sortContent(rowId, course, type, nextId, index) {
@@ -216,40 +175,40 @@ function sortContent(rowId, course, type, nextId, index) {
 
 function onModulecontentGridRowSelect(id) {
     if (id < 1) return;
+    content_form.clear();
     content_form.load(MODULE_URL + '2&id=' + id);
     media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + id);
 }
 
 
 function onModules_toolbar_formClicked(id) {
-    const contentId = ModulecontentGrid.getSelectedRowId();
 
-    const courseId = courses_grid.getSelectedItemId();
+    if (id == "save") {
 
-    if (courseId > 0)
-        switch (id) {
-            case 'save':
+        var contentId = ModulecontentGrid.getSelectedRowId();
 
-                // if(courseId < 1 || ModulecontentGrid.getSelectedRowId() < 1) return;
-                const callback = function (response) {
-                    // your code here
-                    if (isNewContentItemRecord)
-                        isNewContentItemRecord = false;
-                    // const parsedJSON = eval('(' + data.response + ')');
-                    console.log(response)
-                    if (response != null) {
-                        dhtmlx.message({title: 'Success', text: "Item added"});
-                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
-                    }
-                }
-                isNewContentItemRecord
-                    ? content_form.send(MODULE_URL + "4", "post", callback)
-                    : content_form.send(MODULE_URL + "5", "post", callback)
-                break;
+        if (contentId == null) {
+            dhtmlx.alert({
+                type: "alert-error",
+                text: "No Record Selected!",
+                title: "Error!"
+            });
+            return;
         }
 
-    else
-        dhtmlx.alert('Please select records for Project and Content')
+        const callback = function (response) {
+
+            if (response != null) {
+
+                dhtmlx.message({title: 'Success', text: "Successfully Updated"});
+
+                var courseId = courses_grid.getSelectedItemId();
+                ModulecontentGrid.updateFromXML(MODULE_URL + "7&id=" + courseId, true, true);
+            }
+        }
+
+        content_form.send(MODULE_URL + "5", "post", callback);
+    }
 }
 
 
@@ -285,83 +244,122 @@ function getContainerType(url) {
 }
 
 function onMedia_files_toolbarClicked(id) {
-    if (id === null || id < 1) return;
+
     const rowId = ModulecontentGrid.getSelectedRowId();
     const mediaId = media_files_grid.getSelectedRowId();
 
-
-    // if (mediaId) {
-    const rowIndex = media_files_grid.getRowIndex(mediaId);
     switch (id) {
+
         case 'new':
+
+            if (rowId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Content Selected!",
+                    title: "Error!"
+                });
+                return;
+            }
+
             uploadFile(rowId, 'new');
             break;
+
         case 'replace':
-            if (mediaId) {
-                uploadFile(rowId, 'replace');
+
+            if (rowId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Content Selected!",
+                    title: "Error!"
+                });
+                return;
             }
+
+            uploadFile(rowId, 'replace');
+
             break;
 
-        case 'play': {
-            if (mediaId) {
-                const hashColIndex = media_files_grid.getColIndexById("hash");
-                const uriColIndex = media_files_grid.getColIndexById("url");
-                const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
-                const uri = media_files_grid.cells(mediaId, uriColIndex).getValue();
-                const container = getContainerType(uri);
-                /**
-                 * TODO implement hash
-                 * @type {{id, title: string, hash}}
-                 */
-                const objMedia = {
-                    id: mediaId,
-                    url: uri,
-                    hash: hash,
-                    title: "media title",
-                    video: container.type,
-                };
+        case 'play':
 
-                startMediaPlayerWindow(objMedia);
-
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
+                });
+                return;
             }
 
-        }
+            const hashColIndex = media_files_grid.getColIndexById("hash");
+            const uriColIndex = media_files_grid.getColIndexById("url");
+            const hash = media_files_grid.cells(mediaId, hashColIndex).getValue();
+            const uri = media_files_grid.cells(mediaId, uriColIndex).getValue();
+            const container = getContainerType(uri);
+            /**
+             * TODO implement hash
+             * @type {{id, title: string, hash}}
+             */
+            const objMedia = {
+                id: mediaId,
+                url: uri,
+                hash: hash,
+                title: "media title",
+                video: container.type,
+            };
+
+            startMediaPlayerWindow(objMedia);
             break;
 
         case 'delete':
 
-            if (mediaId) {
-                dhtmlx.confirm({
-                    title: "Confirm",
-                    type: "confirm",
-                    text: "Delete this file?",
-                    callback: function (ok) {
-                        if (ok) {
-                            $.ajax({
-                                url: url + "15", type: "POST", data: {id: mediaId},
-                                success: function (response) {
-                                    var parsedJSON = eval('(' + response + ')');
-                                    if (parsedJSON != null) {
-                                        dhtmlx.message({title: 'Success', text: parsedJSON.message});
-                                        media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + rowId);
-                                    }
-                                }
-                            });
-
-                        } else {
-                            return false;
-                        }
-                    }
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
                 });
-            } else {
-                dhtmlx.alert('Please select record');
+                return;
             }
 
+            dhtmlx.confirm({
+                title: "Confirm",
+                type: "confirm",
+                text: "Delete this file?",
+                callback: function (ok) {
+                    if (ok) {
+
+                        $.ajax({
+                            url: url + "15", type: "POST", data: {id: mediaId},
+                            success: function (response) {
+                                var parsedJSON = eval('(' + response + ')');
+                                if (parsedJSON != null) {
+                                    dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                                    media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + rowId);
+                                }
+                            }
+                        });
+                    } else {
+                        return false;
+                    }
+                }
+            });
             break;
+
         case 'up':
+
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
+                });
+                return;
+            }
+
+            var rowIndex = media_files_grid.getRowIndex(mediaId);
             var index = rowIndex - 1;
             var nextId = media_files_grid.getRowId(index);
-            //             alert(index +"   "+ nextId)
+
             if (nextId)
                 sortMedia(mediaId, rowId, 'up', nextId, index);
             else
@@ -369,10 +367,20 @@ function onMedia_files_toolbarClicked(id) {
             break;
 
         case 'down':
+
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
+                });
+                return;
+            }
+
+            var rowIndex = media_files_grid.getRowIndex(mediaId);
             var index = rowIndex + 1;
             var nextId = media_files_grid.getRowId(index);
 
-            //             alert(index +"   "+ nextId)
             if (nextId)
                 sortMedia(mediaId, rowId, 'down', nextId, index);
             else
@@ -380,22 +388,33 @@ function onMedia_files_toolbarClicked(id) {
             break;
 
         case 'download':
-            if (mediaId) {
-                window.location.href = url + "39&PROJECT_ID=" + PROJECT_ID + "&category=" + rowId + "&file=" + mediaId;
-            } else {
-                dhtmlx.alert('Please select file to download');
+
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
+                });
+                return;
             }
+
+            window.location.href = url + "39&PROJECT_ID=" + PROJECT_ID + "&category=" + rowId + "&file=" + mediaId;
             break;
+
         case 'regenerate':
-            if (mediaId) {
-                overWriteThumbTexts(alias)
-            } else
-                dhtmlx.alert('Please select file to download');
+
+            if (mediaId == null) {
+                dhtmlx.alert({
+                    type: "alert-error",
+                    text: "No Media Selected!",
+                    title: "Error!"
+                });
+                return;
+            }
+
+            overWriteThumbTexts(alias);
             break;
     }
-    // } else {
-    //     dhtmlx.alert('Please select file to replace');
-    // }
 }
 
 

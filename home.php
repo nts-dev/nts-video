@@ -6,11 +6,15 @@ $eid = filter_input(INPUT_GET, 'eid', FILTER_SANITIZE_NUMBER_INT);
 
 $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 
-//$session = unserialize($_SESSION['USER']);
-//
-//$userBO = $session->getBOUser();
+$session = unserialize($_SESSION['USER']);
+
+$userBO = $session->getBOUser();
 //$userFlare = $session->getFlareUser();
 
+//print '<pre>';
+////print_r()
+//var_dump($userFlare);
+//exit;
 
 ?>
 <!DOCTYPE html>
@@ -43,8 +47,8 @@ $projectId = filter_input(INPUT_GET, 'projectId', FILTER_SANITIZE_NUMBER_INT);
 <script>
 
     const TRAINEE = { //TODO
-        id: 20196,
-        identifier: "1kenan"
+        id: <?= $userBO->getTraineeId(); ?>,
+        identifier: "<?= $userBO->getPassword(); ?>"
     }
     //const ID = "<?//= $eid ?>//";
     //const identifier = "<?//= $identifier ?>//";

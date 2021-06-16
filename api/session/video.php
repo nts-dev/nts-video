@@ -4,7 +4,7 @@
 use session\RequestType;
 
 $action = $_GET['action'];
-include ('../../../auth.php');
+include('../../../auth.php');
 include('Commons.php');
 
 $bootstrap = App::getInstance();
@@ -36,6 +36,16 @@ switch ($action) {
 
     case RequestType::MEDIA_DELETE:
         //delete
+
+        header("Content-Type: application/json; charset=UTF-8");
+        $data = [
+            'id' => filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT),
+            'user_id' => filter_input(INPUT_POST, 'user_id', FILTER_SANITIZE_NUMBER_INT)
+        ];
+
+        $result = $mediaService->deleteById($data['id'], $data);
+
+        echo json_encode($result);
         break;
 
 
@@ -67,7 +77,7 @@ switch ($action) {
         );
 
         $resultArray = $mediaService->edit($data['id'], $data);
-        var_dump($resultArray);
+//        var_dump($resultArray);
         break;
 
     case RequestType::MEDIA_CATEGORY:
@@ -80,6 +90,15 @@ switch ($action) {
         if (is_array($resultArray))
             XML::videoGrid($resultArray);
 
+        break;
+
+    case RequestType::MEDIA_ENCODE:
+
+        header("Content-Type: application/json; charset=UTF-8");
+
+        $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
+        $result = $mediaService->encodeMedia($id);
+        echo json_encode($result);
         break;
 }
 

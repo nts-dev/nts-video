@@ -143,14 +143,19 @@ function deleteContentRecord(courseId, contentId) {
         text: "Delete this content?",
         callback: function (ok) {
             if (ok) {
-                const callbackFromDeleteAction = function (response) {
-                    console.log(response)
-                    if (response != null) {
-                        dhtmlx.message({title: 'Success', text: "Delete success"});
-                        ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId)
+                $.ajax({
+                    url: MODULE_URL + '3',
+                    type: "POST",
+                    data: {id: contentId, user_id: content_form.getItemValue("user_id")},
+                    success: function (response) {
+                        if (response.success) {
+                            dhtmlx.message({title: 'Success', text: response.message});
+                            ModulecontentGrid.clearAndLoad(MODULE_URL + "7&id=" + courseId);
+                        } else {
+                            dhtmlx.alert({type: "alert-error", text: "An error occurred!"});
+                        }
                     }
-                }
-                content_form.send(MODULE_URL + "3", "post", callbackFromDeleteAction)
+                });
             } else {
                 return false;
             }
@@ -329,12 +334,15 @@ function onMedia_files_toolbarClicked(id) {
                     if (ok) {
 
                         $.ajax({
-                            url: url + "15", type: "POST", data: {id: mediaId},
+                            url: VIDEO_URL + '3',
+                            type: "POST",
+                            data: {id: mediaId, user_id: TRAINEE.id},
                             success: function (response) {
-                                var parsedJSON = eval('(' + response + ')');
-                                if (parsedJSON != null) {
-                                    dhtmlx.message({title: 'Success', text: parsedJSON.message});
+                                if (response.success) {
+                                    dhtmlx.message({title: 'Success', text: response.message});
                                     media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + rowId);
+                                } else {
+                                    dhtmlx.alert({type: "alert-error", text: "An error occurred!"});
                                 }
                             }
                         });
@@ -619,13 +627,11 @@ function attachFile(
 
     });
 
-    fileForm.attachEvent("onUploadComplete", function () {
-
+    fileForm.attachEvent("onUploadFile", function (realName, serverName) {
 
         dhtmlx.message('Upload success. Your file will be available shortly');
         clearForm(fileForm);
         fileUploadWindow.close();
-
 
         media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + module_id, function () {
 //                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
@@ -639,7 +645,38 @@ function attachFile(
             });
         });
 
+        $.ajax({
+            url: VIDEO_URL + "9",
+            type: "GET",
+            data: {id: serverName},
+            success: function (response) {
+
+            }
+        });
+
     });
+
+//     fileForm.attachEvent("onUploadComplete", function () {
+//
+//
+//         dhtmlx.message('Upload success. Your file will be available shortly');
+//         clearForm(fileForm);
+//         fileUploadWindow.close();
+//
+//
+//         media_files_grid.clearAndLoad(VIDEO_URL + '7&id=' + module_id, function () {
+// //                vid_libGrid.clearAndLoad(url + '7&id=' + PROJECT_ID);
+//             $.ajax({
+//                 url: url + "41",
+//                 type: "GET",
+//                 data: {file: media_files_grid.getSelectedRowId()},
+//                 success: function (response) {
+//                     const parsedJSON = eval('(' + response + ')');
+//                 }
+//             });
+//         });
+//
+//     });
 
 
     fileForm.attachEvent("onUploadFail", function (name) {

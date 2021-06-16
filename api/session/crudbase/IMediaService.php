@@ -8,4 +8,6 @@ interface IMediaService
 
     function findByHashing($hash);
 
+    function encodeMedia($id);
+
 }
